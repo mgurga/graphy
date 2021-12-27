@@ -1,5 +1,5 @@
+#include "src/graphy.cpp"
 #include "UnitTest++/UnitTest++.h"
-#include "graphy.cpp"
 #include <stdio.h>
 #include <string>
 
@@ -14,7 +14,7 @@ TEST(SetResult)
 {
     Graphy g;
     string res = g.command("set foo 5");
-    CHECK_EQUAL(res, "OK");
+    CHECK_EQUAL("OK", res);
 }
 
 TEST(SetGet)
@@ -22,7 +22,7 @@ TEST(SetGet)
     Graphy g;
     g.command("set foo 1");
     string res = g.command("get foo");
-    CHECK_EQUAL(res, "1");
+    CHECK_EQUAL("1", res);
 }
 
 TEST(LongSet)
@@ -30,5 +30,5 @@ TEST(LongSet)
     Graphy g;
     g.command("set hello this is a very long string with no spaces");
     string res = g.command("get hello");
-    CHECK_EQUAL(res, "this is a very long string with no spaces");
+    CHECK_EQUAL("this is a very long string with no spaces", res);
 }

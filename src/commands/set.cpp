@@ -7,11 +7,11 @@
 
 using namespace std;
 
-inline string set(string s, Database* db, bool debug = false) {
+inline string set(string s, Database* db, bool* debug) {
     if (s.empty()) return "ERR";
     int split = s.find(" ", 1);
-    if (debug)
-        cout << "setting '" << s.substr(1, split) << "' to '" << s.substr(split + 1) << "'" << endl;
-    db->set(s.substr(0, split), s.substr(split + 1));
+    if (*debug)
+        cout << "setting '" << s.substr(1, split - 1) << "' to '" << s.substr(split + 1) << "'" << endl;
+    db->set(s.substr(1, split - 1), s.substr(split + 1));
     return "OK";
 }

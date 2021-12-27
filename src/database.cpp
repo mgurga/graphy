@@ -1,26 +1,106 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
+#include <string.h>
 #include <iomanip>
 #include <functional>
+#include <vector>
+#include <fstream>
+#include <assert.h>
 
 using namespace std;
 
-// IM GOING TO REWRITE THIS!!! THIS CODE IS ONLY FOR A PROOF OF CONCEPT!!!
+// ----- START -----
+// "GRAPHY" - 6 bytes magic value
+// 0x01 - 1 byte version number
+// ----- KEY VALUE ENTRY -----
+// 0xEE - 1 byte beginning code
+// x bytes - key
+// 0x00 - 1 byte seperation character
+// x bytes - value
+// ----- REPEAT KEY VALUE ENTRY -----
+
 class Database
 {
 public:
-    unordered_map<int, string> data;
+    vector<char> data;
+    bool* debug;
 
-    Database() {}
+    Database(bool* d)
+    {
+        // adds magic value and version
+        char magic[7] = "GRAPHY";
+        for (int i = 0; i < 6; i++)
+            data.push_back(magic[i]);
+        data.push_back((char)0x01);
+
+        debug = d;
+    }
 
     void set(string key, string value)
     {
-        data[hash<string>{}(key)] = value;
+        if (*debug)
+            cout << "key: '" << key << "' to value: '" << value << "'" << endl;
+        // beginning byte
+        data.push_back((char)0xEE);
+
+        // add key
+        const char* ckey = key.data();
+        int len = strlen(ckey);
+        for (int i = 0; i < len; i++)
+            data.push_back(ckey[i]);
+
+        data.push_back((char)0x00);
+
+        // add value
+        const char* cval = value.data();
+        len = strlen(cval);
+        for (int i = 0; i < len; i++)
+            data.push_back(cval[i]);
+
+        // save("test.gdb");
     }
 
     string get(string key)
     {
-        return data.at(hash<string>{}(key));
+        if (*debug)
+            cout << "finding value for key: '" << key << "'" << endl;
+        const char* ckey = key.c_str();
+        int len = strlen(ckey);
+        bool reading = false;
+        bool readingval = false;
+        string rkey = "";
+        string rval = "";
+
+        for (const char c : data)
+        {
+            if (c == (char)0xEE) reading = true;
+            if (c == (char)0x00 && reading)
+            {
+                reading = false;
+                if (*debug)
+                    cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
+                if (rkey == key) readingval = true;
+                rkey = "";
+            }
+            if (c == (char)0xEE && readingval) return rval;
+            if (reading && c != (char)0xEE) rkey += c;
+            if (readingval && c != (char)0x00) rval += c;
+        }
+
+        if (readingval && !rval.empty())
+            return rval;
+
+        return "ERR key not found";
+    }
+
+    string save(string filename)
+    {
+        ofstream f;
+        f.open(filename, ios_base::binary);
+        for (const char b : data)
+            f.write(&b, 1);
+        f.close();
+        return "OK";
     }
 };

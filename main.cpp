@@ -1,4 +1,4 @@
-#include "graphy.cpp"
+#include "src/graphy.cpp"
 #include "UnitTest++/UnitTest++.h"
 #include <stdio.h>
 #include <string.h>
@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc > 1 && strcmp(argv[1], "test") == 0)
         return UnitTest::RunAllTests();
-    else if (argc > 2 && strcmp(argv[1], "r") == 0)
+    else if (argc > 2 && (strcmp(argv[1], "r") == 0 || strcmp(argv[1], "rd") == 0))
     {
         // run singular command
         string cmd = "";
@@ -16,9 +16,12 @@ int main(int argc, char *argv[])
             cmd.append(argv[i]);
             cmd.append(" ");
         }
+        cmd = cmd.substr(0, cmd.length() - 1);
 
         Graphy g;
         // cout << "sending command: " << cmd << endl;
+        if (strcmp(argv[1], "rd") == 0)
+            g.debug = true;
         cout << g.command(cmd) << endl;
         return 1;
     }
