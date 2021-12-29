@@ -4,13 +4,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(UnitTest++ REQUIRED)
 
+file(GLOB_RECURSE SRCFILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB MAINFILES ${PROJECT_SOURCE_DIR}/*.cpp)
+
 add_executable( ${PROJECT_NAME}
-                main.cpp
-                tests.cpp
-
-                src/graphy.cpp
-                src/database.cpp
-
-                src/commands/get.cpp
-                src/commands/set.cpp)
+                ${MAINFILES}
+                ${SRCFILES})
 target_link_libraries(${PROJECT_NAME} UnitTest++)

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         if (strcmp(argv[1], "rd") == 0)
             g.debug = true;
         cout << g.command(cmd) << endl;
-        return 1;
+        return 0;
     }
     else if (argc == 1)
     {
@@ -44,5 +44,5 @@ int main(int argc, char *argv[])
     } else
         cout << "unknown command" << endl;
 
-    return 1;
+    return 0;
 }

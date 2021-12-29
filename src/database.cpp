@@ -16,7 +16,7 @@ using namespace std;
 // ----- KEY VALUE ENTRY -----
 // 0xEE - 1 byte beginning code
 // x bytes - key
-// 0x00 - 1 byte seperation character
+// 0xFF - 1 byte seperation character
 // x bytes - value
 // ----- REPEAT KEY VALUE ENTRY -----
 
@@ -50,7 +50,7 @@ public:
         for (int i = 0; i < len; i++)
             data.push_back(ckey[i]);
 
-        data.push_back((char)0x00);
+        data.push_back((char)0xFF);
 
         // add value
         const char* cval = value.data();
@@ -75,7 +75,7 @@ public:
         for (const char c : data)
         {
             if (c == (char)0xEE) reading = true;
-            if (c == (char)0x00 && reading)
+            if (c == (char)0xFF && reading)
             {
                 reading = false;
                 if (*debug)
@@ -85,13 +85,68 @@ public:
             }
             if (c == (char)0xEE && readingval) return rval;
             if (reading && c != (char)0xEE) rkey += c;
-            if (readingval && c != (char)0x00) rval += c;
+            if (readingval && c != (char)0xFF) rval += c;
         }
 
         if (readingval && !rval.empty())
             return rval;
 
-        return "ERR key not found";
+        return "(nil)";
+    }
+
+    string key_exists(string key)
+    {
+        bool reading = false;
+        string rkey = "";
+
+        for (const char c : data)
+        {
+            if (c == (char)0xEE) reading = true;
+            if (c == (char)0xFF && reading)
+            {
+                reading = false;
+                if (*debug)
+                    cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
+                if (rkey == key) return "1";
+                rkey = "";
+            }
+            if (reading && c != (char)0xEE) rkey += c;
+        }
+
+        return "0";
+    }
+
+    string delete_key(string key)
+    {
+        if (*debug)
+            cout << "finding value for key: '" << key << "'" << endl;
+        const char* ckey = key.c_str();
+        int len = strlen(ckey);
+        bool reading = false;
+        bool readingval = false;
+        string rkey = "";
+        string rval = "";
+
+        for (auto& c : data)
+        {
+            if (c == (char)0xEE) reading = true;
+            if (c == (char)0xFF && reading)
+            {
+                reading = false;
+                if (*debug)
+                    cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
+                if (rkey == key) readingval = true;
+                rkey = "";
+            }
+            if (c == (char)0xEE && readingval) return rval;
+            if (reading && c != (char)0xEE) rkey += c;
+            if (readingval) c = (char) 0x00;
+        }
+
+        if (readingval && !rval.empty())
+            return rval;
+
+        return "(nil)";
     }
 
     string save(string filename)
