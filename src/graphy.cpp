@@ -39,7 +39,7 @@ public:
         if (to_lower(c4) == "incr") return incr(c.substr(4), db);
         if (to_lower(c4) == "decr") return decr(c.substr(4), db);
         if (to_lower(c.substr(0, 6)) == "exists") return db->key_exists(c.substr(7));
-        if(to_lower(c3) == "del") return db->delete_key(c.substr(3));
+        if (to_lower(c3) == "del") return db->delete_key(c.substr(4));
 
         return "ERR unknown command";
     }

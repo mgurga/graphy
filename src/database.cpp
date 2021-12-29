@@ -66,7 +66,6 @@ public:
         if (*debug)
             cout << "finding value for key: '" << key << "'" << endl;
         const char* ckey = key.c_str();
-        int len = strlen(ckey);
         bool reading = false;
         bool readingval = false;
         string rkey = "";
@@ -122,31 +121,49 @@ public:
             cout << "finding value for key: '" << key << "'" << endl;
         const char* ckey = key.c_str();
         int len = strlen(ckey);
+        int keystart = 0;
         bool reading = false;
         bool readingval = false;
         string rkey = "";
-        string rval = "";
+        int i = 0;
 
-        for (auto& c : data)
+        for (char& c : data)
         {
-            if (c == (char)0xEE) reading = true;
+            if (c == (char)0xEE)
+            {
+                keystart = i;
+                reading = true;
+                // readingval = false;
+            }
             if (c == (char)0xFF && reading)
             {
                 reading = false;
                 if (*debug)
+                {
                     cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
+                    cout << rkey.data() << endl;
+                    cout << key.data() << endl;
+                }
                 if (rkey == key) readingval = true;
                 rkey = "";
             }
-            if (c == (char)0xEE && readingval) return rval;
-            if (reading && c != (char)0xEE) rkey += c;
-            if (readingval) c = (char) 0x00;
+            if (c == (char)0xEE && readingval) goto overwrotekey;
+            if (reading && c != (char)0xEE && c != (char)0xFF) rkey += c;
+            if (readingval) c = 0x00;
+            i++;
         }
 
-        if (readingval && !rval.empty())
-            return rval;
+        if (readingval)
+            goto overwrotekey;
 
         return "(nil)";
+
+overwrotekey:
+        cout << "key starts at: " << keystart << " and is: " << len << " bytes long" << endl;
+        for (int i = keystart; i < keystart + len; i++)
+            data.at(i) = 0x00;
+
+        return "1";
     }
 
     string save(string filename)

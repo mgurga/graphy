@@ -79,7 +79,10 @@ TEST(ManyIncr)
 TEST(DeleteKey)
 {
     Graphy g;
+    g.command("d");
+    g.command("set before value");
     g.command("set test key");
+    g.command("set after data");
     g.command("del test");
     string res = g.command("get test");
     g.command("save");
