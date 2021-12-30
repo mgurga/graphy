@@ -47,14 +47,14 @@ TEST(KeyExists)
     g.command("set foo bar");
     g.command("set database test");
     string res = g.command("exists foo");
-    CHECK_EQUAL("1", res);
+    CHECK_EQUAL("(integer) 1", res);
 }
 
 TEST(KeyDoesNotExists)
 {
     Graphy g;
     string res = g.command("exists foo");
-    CHECK_EQUAL("0", res);
+    CHECK_EQUAL("(integer) 0", res);
 }
 
 TEST(SimpleIncr)
@@ -76,15 +76,48 @@ TEST(ManyIncr)
     CHECK_EQUAL("9", res);
 }
 
+TEST(SimpleDecr)
+{
+    Graphy g;
+    g.command("set foo 5");
+    string res = g.command("incr foo");
+    CHECK_EQUAL("6", res);
+}
+
+TEST(ManyDecr)
+{
+    Graphy g;
+    g.command("set foo 5");
+    g.command("decr foo");
+    g.command("decr foo");
+    g.command("decr foo");
+    string res = g.command("decr foo");
+    CHECK_EQUAL("1", res);
+}
+
 TEST(DeleteKey)
 {
     Graphy g;
-    g.command("d");
     g.command("set before value");
     g.command("set test key");
     g.command("set after data");
-    g.command("del test");
+    string dres = g.command("del test");
     string res = g.command("get test");
-    g.command("save");
+    CHECK_EQUAL("(integer) 1", dres);
     CHECK_EQUAL("(nil)", res);
+}
+
+TEST(DeleteMultiple)
+{
+    Graphy g;
+    g.command("set before value");
+    g.command("set test key");
+    g.command("set after data");
+    g.command("set post info");
+    string dres = g.command("del test after");
+    string res = g.command("get test");
+    string res2 = g.command("get after");
+    CHECK_EQUAL("(integer) 2", dres);
+    CHECK_EQUAL("(nil)", res);
+    CHECK_EQUAL("(nil)", res2);
 }

@@ -9,6 +9,7 @@
 #include "commands/getset.cpp"
 #include "commands/save.cpp"
 #include "commands/incrdecr.cpp"
+#include "commands/existsdel.cpp"
 
 using namespace std;
 
@@ -38,8 +39,8 @@ public:
         if (to_lower(c4) == "save") return save(c.substr(4), db, &debug);
         if (to_lower(c4) == "incr") return incr(c.substr(4), db);
         if (to_lower(c4) == "decr") return decr(c.substr(4), db);
-        if (to_lower(c.substr(0, 6)) == "exists") return db->key_exists(c.substr(7));
-        if (to_lower(c3) == "del") return db->delete_key(c.substr(4));
+        if (to_lower(c.substr(0, 6)) == "exists") return exists(c.substr(6), db);
+        if (to_lower(c3) == "del") return del(c.substr(3), db);
 
         return "ERR unknown command";
     }

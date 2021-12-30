@@ -82,7 +82,7 @@ public:
                 if (rkey == key) readingval = true;
                 rkey = "";
             }
-            if (c == (char)0xEE && readingval) return rval;
+            if ((c == (char)0xEE || c == (char)0x00) && readingval) return rval;
             if (reading && c != (char)0xEE) rkey += c;
             if (readingval && c != (char)0xFF) rval += c;
         }
@@ -93,7 +93,7 @@ public:
         return "(nil)";
     }
 
-    string key_exists(string key)
+    bool key_exists(string key)
     {
         bool reading = false;
         string rkey = "";
@@ -106,16 +106,16 @@ public:
                 reading = false;
                 if (*debug)
                     cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
-                if (rkey == key) return "1";
+                if (rkey == key) return true;
                 rkey = "";
             }
             if (reading && c != (char)0xEE) rkey += c;
         }
 
-        return "0";
+        return false;
     }
 
-    string delete_key(string key)
+    bool delete_key(string key)
     {
         if (*debug)
             cout << "finding value for key: '" << key << "'" << endl;
@@ -131,7 +131,7 @@ public:
         {
             if (c == (char)0xEE)
             {
-                keystart = i;
+                if (!readingval) keystart = i;
                 reading = true;
                 // readingval = false;
             }
@@ -139,11 +139,7 @@ public:
             {
                 reading = false;
                 if (*debug)
-                {
                     cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
-                    cout << rkey.data() << endl;
-                    cout << key.data() << endl;
-                }
                 if (rkey == key) readingval = true;
                 rkey = "";
             }
@@ -156,14 +152,15 @@ public:
         if (readingval)
             goto overwrotekey;
 
-        return "(nil)";
+        return false;
 
 overwrotekey:
-        cout << "key starts at: " << keystart << " and is: " << len << " bytes long" << endl;
-        for (int i = keystart; i < keystart + len; i++)
+        if (*debug)
+            cout << "key starts at: " << keystart << " and is: " << len << " bytes long" << endl;
+        for (int i = keystart; i <= keystart + len; i++)
             data.at(i) = 0x00;
 
-        return "1";
+        return true;
     }
 
     string save(string filename)

@@ -15,7 +15,7 @@ build:
     mkdir -p build
     cd build
     cmake ..
-    mold -run make -j $(shell nproc)
+    mold -run make -j $(nproc)
 
 clean:
     rm -rf build
