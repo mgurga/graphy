@@ -5,6 +5,11 @@
 #include "../database.cpp"
 #endif
 
+#ifndef PARSER_CPP
+#define PARSER_CPP
+#include "../parser.cpp"
+#endif
+
 using namespace std;
 
 inline string get(string s, Database* db)
@@ -15,27 +20,29 @@ inline string get(string s, Database* db)
 
 inline string set(string s, Database* db, bool* debug)
 {
-    if (s.empty()) return "ERR";
-    int split = s.find(" ", 1);
-    string key = s.substr(1, split - 1);
+    if (s.empty()) return "ERR incorrect number of arguments";
+    Parser p;
+    vector<string> args = p.parse(s);
+    string key = args.at(0);
     if (db->key_exists(key)) db->delete_key(key);
     if (*debug)
-        cout << "setting '" << key << "' to '" << s.substr(split + 1) << "'" << endl;
-    db->set(key, s.substr(split + 1));
+        cout << "setting '" << key << "' to '" << args.at(1) << "'" << endl;
+    db->set(key, args.at(1));
     return "OK";
 }
 
 inline string getset(string s, Database* db, bool* debug)
 {
-    s = s.substr(1);
+    Parser p;
+    vector<string> args = p.parse(s);
     if (*debug)
         cout << "getset command: '" << s << "'" << endl;
     int split = s.find(" ");
-    string key = s.substr(0, split);
+    string key = args.at(0);
     if (*debug)
         cout << "detected key is: '" << key << "'";
     string getres = db->get(key);
     db->delete_key(key);
-    db->set(key, s.substr(split + 1));
+    db->set(key, args.at(1));
     return getres;
 }

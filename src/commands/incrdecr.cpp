@@ -5,11 +5,18 @@
 #include "../database.cpp"
 #endif
 
+#ifndef PARSER_CPP
+#define PARSER_CPP
+#include "../parser.cpp"
+#endif
+
 using namespace std;
 
 inline string incr(string s, Database* db)
 {
-    string key = s.substr(1);
+    Parser p;
+    vector<string> args = p.parse(s);
+    string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))
         db->delete_key(key);
@@ -20,7 +27,9 @@ inline string incr(string s, Database* db)
 
 inline string decr(string s, Database* db)
 {
-    string key = s.substr(1);
+    Parser p;
+    vector<string> args = p.parse(s);
+    string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))
         db->delete_key(key);

@@ -1,24 +1,25 @@
 #include <string>
 #include <iostream>
-#include <sstream>
 
 #ifndef DATABASE_CPP
 #define DATABASE_CPP
 #include "../database.cpp"
 #endif
 
+#ifndef PARSER_CPP
+#define PARSER_CPP
+#include "../parser.cpp"
+#endif
+
 using namespace std;
 
 inline string exists(string s, Database* db)
 {
-    if (s.empty()) return "ERR wrong number of arguments passed";
-    s = s.substr(1);
+    Parser p;
+    vector<string> args = p.parse(s);
     int successful = 0;
 
-    stringstream ss (s);
-    string item;
-
-    while (getline (ss, item, ' '))
+    for (string item : args)
         if (db->key_exists(item))
             successful++;
 
@@ -27,14 +28,11 @@ inline string exists(string s, Database* db)
 
 inline string del(string s, Database* db)
 {
-    if (s.empty()) return "ERR wrong number of arguments passed";
-    s = s.substr(1);
+    Parser p;
+    vector<string> args = p.parse(s);
     int successful = 0;
 
-    stringstream ss (s);
-    string item;
-
-    while (getline (ss, item, ' '))
+    for (string item : args)
         if (db->delete_key(item))
             successful++;
 
