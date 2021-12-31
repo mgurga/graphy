@@ -16,6 +16,7 @@ inline string incr(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
+    if (args.size() != 1) return "ERR incorrect number of arguments";
     string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))
@@ -29,6 +30,7 @@ inline string decr(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
+    if (args.size() != 1) return "ERR incorrect number of arguments";
     string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))

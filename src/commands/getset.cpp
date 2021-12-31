@@ -14,7 +14,9 @@ using namespace std;
 
 inline string get(string s, Database* db)
 {
-    if (s.empty()) return "ERR";
+    Parser p;
+    vector<string> args = p.parse(s);
+    if (args.size() != 1) return "ERR incorrect number of arguments";
     return db->get(s.substr(1));
 }
 
@@ -23,6 +25,7 @@ inline string set(string s, Database* db, bool* debug)
     if (s.empty()) return "ERR incorrect number of arguments";
     Parser p;
     vector<string> args = p.parse(s);
+    if (args.size() != 2) return "ERR incorrect number of arguments";
     string key = args.at(0);
     if (db->key_exists(key)) db->delete_key(key);
     if (*debug)
@@ -35,6 +38,7 @@ inline string getset(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
+    if (args.size() != 2) return "ERR incorrect number of arguments";
     if (*debug)
         cout << "getset command: '" << s << "'" << endl;
     int split = s.find(" ");

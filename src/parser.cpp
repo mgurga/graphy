@@ -17,6 +17,7 @@ public:
 
     vector<string> parse(string s)
     {
+        if (s.empty()) return {};
         vector<string> out;
 
         if(debug)
