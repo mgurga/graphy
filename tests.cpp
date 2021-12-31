@@ -121,3 +121,30 @@ TEST(DeleteMultiple)
     CHECK_EQUAL("(nil)", res);
     CHECK_EQUAL("(nil)", res2);
 }
+
+TEST(OverwriteKey)
+{
+    Graphy g;
+    g.command("set test val");
+    g.command("set test val2");
+    g.command("set test val3");
+    string res = g.command("get test");
+    CHECK_EQUAL("val3", res);
+}
+
+TEST(Getset)
+{
+    Graphy g;
+    g.command("set foo hello");
+    string getsetres = g.command("getset foo world");
+    string getres = g.command("get foo");
+    CHECK_EQUAL("hello", getsetres);
+    CHECK_EQUAL("world", getres);
+}
+
+TEST(GetsetNotExisting)
+{
+    Graphy g;
+    string res = g.command("getset unsetkey test");
+    CHECK_EQUAL("(nil)", res);
+}

@@ -32,14 +32,16 @@ public:
 
         string c3 = c.substr(0, 3);
         string c4 = c.substr(0, 4);
+        string c6 = c.substr(0, 6);
 
-        if (to_lower(c4) == "ping") return "PONG";
-        if (to_lower(c3) == "get") return get(c.substr(3), db);
-        if (to_lower(c3) == "set") return set(c.substr(3), db, &debug);
-        if (to_lower(c4) == "save") return save(c.substr(4), db, &debug);
+        if (to_lower(c6) == "getset") return getset(c.substr(6), db, &debug);
+        if (to_lower(c6) == "exists") return exists(c.substr(6), db);
         if (to_lower(c4) == "incr") return incr(c.substr(4), db);
         if (to_lower(c4) == "decr") return decr(c.substr(4), db);
-        if (to_lower(c.substr(0, 6)) == "exists") return exists(c.substr(6), db);
+        if (to_lower(c4) == "ping") return "PONG";
+        if (to_lower(c4) == "save") return save(c.substr(4), db, &debug);
+        if (to_lower(c3) == "get") return get(c.substr(3), db);
+        if (to_lower(c3) == "set") return set(c.substr(3), db, &debug);
         if (to_lower(c3) == "del") return del(c.substr(3), db);
 
         return "ERR unknown command";
