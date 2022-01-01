@@ -38,6 +38,7 @@ public:
         {
             if (to_lower(c6) == "getset") return getset(c.substr(6), db, &debug);
             if (to_lower(c6) == "exists") return exists(c.substr(6), db);
+            if (to_lower(c6) == "dbsize") return dbsize(c.substr(6), db, &debug);
             if (to_lower(c4) == "incr") return incr(c.substr(4), db);
             if (to_lower(c4) == "decr") return decr(c.substr(4), db);
             if (to_lower(c4) == "ping") return "PONG";

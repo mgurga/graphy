@@ -191,4 +191,14 @@ SUITE(GraphyTests)
         string res = g.command("getset unsetkey test");
         CHECK_EQUAL("(nil)", res);
     }
+
+    TEST(Dbsize)
+    {
+        Graphy g;
+        g.command("set hello world");
+        g.command("set second key");
+        g.command("set final val");
+        string res = g.command("dbsize");
+        CHECK_EQUAL("(integer) 3", res);
+    }
 }

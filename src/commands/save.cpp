@@ -13,7 +13,8 @@
 
 using namespace std;
 
-inline string save(string s, Database* db, bool* debug) {
+inline string save(string s, Database* db, bool* debug)
+{
     Parser p;
     vector<string> args = p.parse(s);
     if (args.size() == 0) {
@@ -25,4 +26,10 @@ inline string save(string s, Database* db, bool* debug) {
         return db->save(timestamp + ".gdb");
     } else
         return db->save(args.at(0) + ".gdb");
+}
+
+inline string dbsize(string s, Database* db, bool* debug)
+{
+    if (!s.empty()) return "ERR incorrect number of arguments";
+    return "(integer) " + to_string(db->keys());
 }

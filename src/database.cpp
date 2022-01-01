@@ -172,4 +172,13 @@ overwrotekey:
         f.close();
         return "OK";
     }
+
+    int keys()
+    {
+        int out = 0;
+        for (const char c : data)
+            if (c == (char)0xEE)
+                out++;
+        return out;
+    }
 };
