@@ -105,7 +105,7 @@ SUITE(GraphyTests)
         Graphy g;
         g.command("set foo 5");
         string res = g.command("incr foo");
-        CHECK_EQUAL("6", res);
+        CHECK_EQUAL("(integer) 6", res);
     }
 
     TEST(ManyIncr)
@@ -116,7 +116,7 @@ SUITE(GraphyTests)
         g.command("incr foo");
         g.command("incr foo");
         string res = g.command("incr foo");
-        CHECK_EQUAL("9", res);
+        CHECK_EQUAL("(integer) 9", res);
     }
 
     TEST(SimpleDecr)
@@ -124,7 +124,7 @@ SUITE(GraphyTests)
         Graphy g;
         g.command("set foo 5");
         string res = g.command("incr foo");
-        CHECK_EQUAL("6", res);
+        CHECK_EQUAL("(integer) 6", res);
     }
 
     TEST(ManyDecr)
@@ -135,7 +135,7 @@ SUITE(GraphyTests)
         g.command("decr foo");
         g.command("decr foo");
         string res = g.command("decr foo");
-        CHECK_EQUAL("1", res);
+        CHECK_EQUAL("(integer) 1", res);
     }
 
     TEST(DeleteKey)
@@ -200,5 +200,35 @@ SUITE(GraphyTests)
         g.command("set final val");
         string res = g.command("dbsize");
         CHECK_EQUAL("(integer) 3", res);
+    }
+
+    TEST(EchoCorrectArgs)
+    {
+        Graphy g;
+        string res = g.command("echo \"hello world\"");
+        CHECK_EQUAL("hello world", res);
+    }
+
+    TEST(EchoIncorrectArgs)
+    {
+        Graphy g;
+        string res = g.command("echo hello world");
+        CHECK_EQUAL("ERR incorrect number of arguments", res);
+    }
+
+    TEST(Incrby5)
+    {
+        Graphy g;
+        g.command("set foo 5");
+        string res = g.command("incrby foo 5");
+        CHECK_EQUAL("(integer) 10", res);
+    }
+
+    TEST(Decrby5)
+    {
+        Graphy g;
+        g.command("set foo 5");
+        string res = g.command("decrby foo 5");
+        CHECK_EQUAL("(integer) 0", res);
     }
 }

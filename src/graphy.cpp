@@ -10,6 +10,7 @@
 #include "commands/save.cpp"
 #include "commands/incrdecr.cpp"
 #include "commands/existsdel.cpp"
+#include "commands/echo.cpp"
 
 using namespace std;
 
@@ -39,8 +40,11 @@ public:
             if (to_lower(c6) == "getset") return getset(c.substr(6), db, &debug);
             if (to_lower(c6) == "exists") return exists(c.substr(6), db);
             if (to_lower(c6) == "dbsize") return dbsize(c.substr(6), db, &debug);
+            if (to_lower(c6) == "decrby") return decrby(c.substr(6), db);
+            if (to_lower(c6) == "incrby") return incrby(c.substr(6), db);
             if (to_lower(c4) == "incr") return incr(c.substr(4), db);
             if (to_lower(c4) == "decr") return decr(c.substr(4), db);
+            if (to_lower(c4) == "echo") return echo(c.substr(4));
             if (to_lower(c4) == "ping") return "PONG";
             if (to_lower(c4) == "save") return save(c.substr(4), db, &debug);
             if (to_lower(c3) == "get") return get(c.substr(3), db);
