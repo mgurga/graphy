@@ -231,4 +231,33 @@ SUITE(GraphyTests)
         string res = g.command("decrby foo 5");
         CHECK_EQUAL("(integer) 0", res);
     }
+
+    TEST(RenameKeySuccess)
+    {
+        Graphy g;
+        g.command("set hello world");
+        g.command("rename hello test");
+        string res = g.command("get test");
+        string res2 = g.command("get hello");
+        CHECK_EQUAL("world", res);
+        CHECK_EQUAL("(nil)", res2);
+    }
+
+    TEST(RenamenxKeyExists)
+    {
+        Graphy g;
+        g.command("set hello world");
+        g.command("set foo bar");
+        string res = g.command("renamenx hello foo");
+        string res2 = g.command("get foo");
+        CHECK_EQUAL("(integer) 0", res);
+        CHECK_EQUAL("bar", res2);
+    }
+
+    TEST(Quit)
+    {
+        Graphy g;
+        string res = g.command("quit");
+        CHECK_EQUAL("OK", res);
+    }
 }

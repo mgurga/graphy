@@ -38,6 +38,11 @@ int main(int argc, char *argv[])
             getline(cin, input);
             if(input == "d")
                 g.debug = !g.debug;
+            else if(input == "quit")
+            {
+                cout << g.command(input) << endl;
+                exit(0);
+            }
             else
                 cout << g.command(input) << endl;
         }
