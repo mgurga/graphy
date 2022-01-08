@@ -313,4 +313,42 @@ SUITE(GraphyTests)
         string res = g.command("scard test");
         CHECK_EQUAL("(integer) 2", res);
     }
+
+    TEST(SetIntersection)
+    {
+        Graphy g;
+        g.command("sadd key1 a b c");
+        g.command("sadd key2 c d e");
+        string res = g.command("sinter key1 key2");
+        CHECK_EQUAL("1) \"c\"", res);
+    }
+
+    TEST(SetIntersectionStore)
+    {
+        Graphy g;
+        g.command("sadd key1 a b c");
+        g.command("sadd key2 c d e");
+        g.command("sinterstore res key1 key2");
+        string res = g.command("smembers res");
+        CHECK_EQUAL("1) \"c\"", res);
+    }
+
+    TEST(SetDifference)
+    {
+        Graphy g;
+        g.command("sadd key1 a b c");
+        g.command("sadd key2 c d e");
+        string res = g.command("sdiff key1 key2");
+        CHECK_EQUAL("1) \"a\"\n2) \"b\"", res);
+    }
+
+    TEST(SetDifferenceStore)
+    {
+        Graphy g;
+        g.command("sadd key1 a b c");
+        g.command("sadd key2 c d e");
+        g.command("sdiffstore res key1 key2");
+        string res = g.command("smembers res");
+        CHECK_EQUAL("1) \"a\"\n2) \"b\"", res);
+    }
 }
