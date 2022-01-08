@@ -260,4 +260,57 @@ SUITE(GraphyTests)
         string res = g.command("quit");
         CHECK_EQUAL("OK", res);
     }
+
+    TEST(AddToSet)
+    {
+        Graphy g;
+        g.command("set beginning key");
+        g.command("sadd myset hello");
+        g.command("sadd myset world");
+        g.command("sadd myset hi");
+        g.command("set following value");
+        vector<string> mem = g.db->smembers("myset");
+        vector<string> exp = {"hello", "world", "hi"};
+        CHECK_ARRAY_EQUAL(exp, mem, 3);
+    }
+
+    TEST(AddDuplicatesToSet)
+    {
+        Graphy g;
+        g.command("sadd myset hello");
+        g.command("sadd myset world");
+        string res = g.command("sadd myset hello");
+        CHECK_EQUAL("(integer) 0", res);
+    }
+
+    TEST(GetSetMemberList)
+    {
+        Graphy g;
+        g.command("set beginning key");
+        g.command("sadd myset hello");
+        g.command("sadd myset world");
+        g.command("set following value");
+        string res = g.command("smembers myset");
+        CHECK_EQUAL("1) \"hello\"\n2) \"world\"", res);
+    }
+
+    TEST(IsSetMember)
+    {
+        Graphy g;
+        g.command("sadd set hello");
+        string ismem = g.command("sismember set hello");
+        string notmem = g.command("sismember set world");
+        CHECK_EQUAL("(integer) 1", ismem);
+        CHECK_EQUAL("(integer) 0", notmem);
+    }
+
+    TEST(SetSize)
+    {
+        Graphy g;
+        g.command("set beginning key");
+        g.command("sadd test hello");
+        g.command("sadd test world");
+        string res = g.command("scard test");
+        CHECK_EQUAL("(integer) 2", res);
+    }
 }
