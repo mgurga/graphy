@@ -59,6 +59,8 @@ public:
             if (to_lower(c5) == "scard") return scard(c.substr(5), db);
             if (to_lower(c5) == "sdiff") return sdiff(c.substr(5), db);
             if (to_lower(c4) == "incr") return incr(c.substr(4), db);
+            if (to_lower(c4) == "mset") return mset(c.substr(4), db, &debug);
+            if (to_lower(c4) == "mget") return mget(c.substr(4), db, &debug);
             if (to_lower(c4) == "sadd") return sadd(c.substr(4), db);
             if (to_lower(c4) == "decr") return decr(c.substr(4), db);
             if (to_lower(c4) == "echo") return echo(c.substr(4));

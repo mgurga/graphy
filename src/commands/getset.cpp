@@ -10,6 +10,11 @@
 #include "../parser.cpp"
 #endif
 
+#ifndef FORMATTER_CPP
+#define FORMATTER_CPP
+#include "../formatter.cpp"
+#endif
+
 using namespace std;
 
 inline string get(string s, Database* db)
@@ -17,7 +22,7 @@ inline string get(string s, Database* db)
     Parser p;
     vector<string> args = p.parse(s);
     if (args.size() != 1) return "ERR incorrect number of arguments";
-    return db->get(s.substr(1));
+    return db->get(args.at(0));
 }
 
 inline string set(string s, Database* db, bool* debug)
@@ -49,6 +54,36 @@ inline string getset(string s, Database* db, bool* debug)
     db->delete_key(key);
     db->set(key, args.at(1));
     return getres;
+}
+
+inline string mset(string s, Database* db, bool* debug)
+{
+    Parser p;
+    vector<string> args = p.parse(s);
+    if (args.size() != 0 && args.size() % 2 != 0) return "ERR incorrect number of arguments";
+    for (int i = 0; i < args.size(); i+=2)
+    {
+        if (*debug)
+            cout << "setting: " << args.at(i) << " to: " << args.at(i + 1) << endl;
+        db->set(args.at(i), args.at(i + 1));
+    }
+    return "OK";
+}
+
+inline string mget(string s, Database* db, bool* debug)
+{
+    Parser p;
+    vector<string> args = p.parse(s);
+    vector<string> out;
+    if (args.size() == 0) return "ERR incorrect number of arguments";
+    for (int i = 0; i < args.size(); i++)
+    {
+        if (*debug)
+            cout << "getting: " << args.at(i) << endl;
+        out.push_back(db->get(args.at(i)));
+    }
+    Formatter f;
+    return f.redis_list(out);
 }
 
 inline string rename(string s, Database* db)

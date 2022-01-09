@@ -351,4 +351,23 @@ SUITE(GraphyTests)
         string res = g.command("smembers res");
         CHECK_EQUAL("1) \"a\"\n2) \"b\"", res);
     }
+
+    TEST(MultipleSet)
+    {
+        Graphy g;
+        g.command("mset key1 Hello key2 World");
+        string key1 = g.command("get key1");
+        string key2 = g.command("get key2");
+        CHECK_EQUAL("Hello", key1);
+        CHECK_EQUAL("World", key2);
+    }
+
+    TEST(MultipleGet)
+    {
+        Graphy g;
+        Formatter f;
+        g.command("mset key1 Hello key2 World");
+        string res = g.command("mget key1 key2 nonexisting");
+        CHECK_EQUAL(f.redis_list({"Hello", "World", "(nil)"}), res);
+    }
 }
