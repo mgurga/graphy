@@ -46,7 +46,6 @@ inline string getset(string s, Database* db, bool* debug)
     if (args.size() != 2) return "ERR incorrect number of arguments";
     if (*debug)
         cout << "getset command: '" << s << "'" << endl;
-    int split = s.find(" ");
     string key = args.at(0);
     if (*debug)
         cout << "detected key is: '" << key << "'";

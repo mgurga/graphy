@@ -17,6 +17,8 @@ public:
 
     string redis_list(vector<string> arr)
     {
+        if (arr.empty())
+            return "empty array";
         string out;
         int index = 0;
 

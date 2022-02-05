@@ -1,5 +1,5 @@
-shell: build
-    cd build && ./graphy
+shell command: build
+    cd build && ./graphy {{command}}
 
 test: build
     cd build && ./graphy test

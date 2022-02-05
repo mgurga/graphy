@@ -370,4 +370,53 @@ SUITE(GraphyTests)
         string res = g.command("mget key1 key2 nonexisting");
         CHECK_EQUAL(f.redis_list({"Hello", "World", "(nil)"}), res);
     }
+
+    TEST(RemoveSet)
+    {
+        Graphy g;
+        g.command("set hello world");
+        g.command("sadd test a");
+        g.command("sadd test b");
+        g.command("set ending key");
+        string res = g.command("srem test a");
+        string ismemres = g.command("sismember test a");
+        CHECK_EQUAL("(integer) 1", res);
+        CHECK_EQUAL("(integer) 0", ismemres);
+    }
+
+    TEST(PopSet)
+    {
+        Graphy g;
+        g.command("set hello world");
+        g.command("sadd test a b c");
+        g.command("set ending key");
+        string res = g.command("spop test");
+        if (res == "\"a\"" || res == "\"b\"" || res == "\"c\"")
+            CHECK_EQUAL(true, true);
+        else
+            CHECK_EQUAL(true, false);
+    }
+
+    TEST(MultiplePopSet)
+    {
+        Graphy g;
+        Formatter f;
+        g.command("sadd test a b");
+        string res = g.command("spop test 3");
+        if (res == f.redis_list({"a", "b"}) || res == f.redis_list({"b", "a"}))
+            CHECK_EQUAL(true, true);
+        else
+            CHECK_EQUAL(true, false);
+    }
+
+    TEST(RandomSetMember)
+    {
+        Graphy g;
+        g.command("sadd test a b c");
+        string res = g.command("srandmember test");
+        if (res == "\"a\"" || res == "\"b\"" || res == "\"c\"")
+            CHECK_EQUAL(true, true);
+        else
+            CHECK_EQUAL(true, false);
+    }
 }

@@ -8,6 +8,7 @@
 #include <fstream>
 #include <assert.h>
 #include <iomanip>
+#include <random>
 
 using namespace std;
 
@@ -40,11 +41,33 @@ enum KeyType {
     List
 };
 
+class DBEntry
+{
+public:
+    string key;
+    int metadata;
+    string value;
+    int keystart;
+    KeyType keytype;
+
+    friend ostream& operator<< (ostream &out, DBEntry const& data)
+    {
+        out << "key: '" << data.key << "' metadata: " << data.metadata << " value: '" << data.value << "' key start index: " << data.keystart;
+        return out;
+    }
+
+    int entry_size()
+    {
+        return key.length() + META_SIZE + value.length() + 1;
+    }
+};
+
 class Database
 {
 public:
     vector<char> data;
     bool* debug;
+    mt19937 gen;
 
     Database(bool* d)
     {
@@ -53,6 +76,9 @@ public:
         for (int i = 0; i < 6; i++)
             data.push_back(magic[i]);
         data.push_back((char)0x01);
+
+        random_device rd;
+        gen.seed(rd());
 
         debug = d;
     }
@@ -182,7 +208,7 @@ public:
     bool delete_key(string key)
     {
         if (*debug)
-            cout << "finding value for key: '" << key << "'" << endl;
+            cout << "deleting value for key: '" << key << "'" << endl;
         const char* ckey = key.c_str();
         int len = strlen(ckey);
         int keystart = 0;
@@ -273,7 +299,6 @@ checkmetadata:
     vector<string> smembers(string setname)
     {
         bool reading = false;
-        bool readingval = false;
         bool readingmeta = false;
         bool correctmeta = false;
         string rkey = "";
@@ -287,7 +312,6 @@ checkmetadata:
             if (c == BEG)
             {
                 reading = true;
-                readingval = false;
                 correctmeta = false;
                 readingmeta = false;
             }
@@ -311,7 +335,6 @@ checkmetadata:
             if (c == VAL && correctmeta)
             {
                 // cout << sval << endl;
-                readingval = true;
                 readingmeta = false;
                 if (!sval.empty())
                     out.push_back(sval);
@@ -331,7 +354,6 @@ checkmetadata:
     bool sismember(string setname, string val)
     {
         bool reading = false;
-        bool readingval = false;
         bool readingmeta = false;
         bool correctmeta = false;
         string rkey = "";
@@ -344,7 +366,6 @@ checkmetadata:
             if (c == BEG)
             {
                 reading = true;
-                readingval = false;
                 correctmeta = false;
                 readingmeta = false;
             }
@@ -368,7 +389,6 @@ checkmetadata:
             if (c == VAL && correctmeta)
             {
                 // cout << sval << endl;
-                readingval = true;
                 readingmeta = false;
                 if (sval == val && correctmeta)
                     return true;
@@ -384,6 +404,100 @@ checkmetadata:
         return false;
     }
 
+    bool srem(string setname, string val)
+    {
+        vector<DBEntry> keys = get_key_data(setname);
+        int deletedbytes = 0;
+        if (keys.empty())
+            return false;
+
+        for (DBEntry e : keys)
+        {
+            if (e.value == val)
+            {
+                if (*debug)
+                {
+                    cout << "delete key: " << e << endl;
+                    cout << "starting at " << e.keystart - deletedbytes - 1 << endl;
+                }
+                data.erase(data.begin() + e.keystart - deletedbytes - 1,
+                           data.begin() + e.keystart + e.entry_size() - deletedbytes + 1);
+                deletedbytes += e.entry_size() + 2;
+            }
+        }
+
+        return true;
+    }
+
+    string srandmember(string setname)
+    {
+        vector<DBEntry> keys = get_key_data(setname);
+        if (keys.empty())
+            return "(nil)";
+
+        if (*debug)
+            cout << "random keys to choose from: " << keys.size() << endl;
+
+        uniform_int_distribution<int> dist(0, keys.size() - 1);
+        int randkey = dist(gen);
+
+        if (*debug)
+            cout << "chose key number: " << randkey << endl;
+
+        return keys.at(randkey).value;
+    }
+
+    int key_start_index(string key)
+    {
+        bool reading = false;
+        string rkey = "";
+        int index = 0;
+
+        for (const char c : data)
+        {
+            if (c == BEG)
+                reading = true;
+            if (c == META)
+            {
+                if (rkey == key)
+                    return index - key.length();
+                rkey = "";
+                reading = false;
+            }
+            if (reading && c != BEG)
+                rkey += c;
+            index++;
+        }
+
+        return -1;
+    }
+
+    vector<int> key_start_index_multi(string key)
+    {
+        bool reading = false;
+        string rkey = "";
+        int index = 0;
+        vector<int> out;
+
+        for (const char c : data)
+        {
+            if (c == BEG)
+                reading = true;
+            if (c == META)
+            {
+                if (rkey == key)
+                    out.push_back(index - key.length());
+                rkey = "";
+                reading = false;
+            }
+            if (reading && c != BEG)
+                rkey += c;
+            index++;
+        }
+
+        return out;
+    }
+
     int keys()
     {
         int out = 0;
@@ -391,6 +505,53 @@ checkmetadata:
             if (c == BEG)
                 out++;
         return out;
+    }
+
+    vector<DBEntry> get_key_data(string key)
+    {
+        vector<DBEntry> out;
+        vector<int> startindex = key_start_index_multi(key);
+        if (startindex.empty())
+            return out;
+
+        for (const int e : startindex)
+        {
+            DBEntry entry;
+            entry.key = key;
+            entry.keystart = e;
+
+            unsigned char buffer[META_SIZE];
+            for (int i = 0; i < META_SIZE; i++)
+                buffer[i] = data.at(e + key.length() + i + 1);
+            entry.metadata = to_int(buffer);
+
+            if (entry.metadata == 0)
+                entry.keytype = KeyValue;
+            else if (entry.metadata == 1)
+                entry.keytype = Set;
+            else
+                entry.keytype = List;
+
+            int valstart = e + key.length() + META_SIZE + 2;
+            string val = "";
+            int index = 0;
+            while (data.size() != valstart + index &&
+                   data.at(valstart + index) != (char)0xee &&
+                   data.at(valstart + index) != (char)0x00)
+            {
+                val += data.at(valstart + index);
+                index++;
+            }
+            entry.value = val;
+
+            out.push_back(entry);
+        }
+
+        return out;
+    }
+
+    void print_hex(int i) {
+        cout << hex << setfill('0') << setw(2) << i << " " << endl;
     }
 
     void print_string_bytes(string s)
