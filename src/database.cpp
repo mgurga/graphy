@@ -209,47 +209,26 @@ public:
     {
         if (*debug)
             cout << "deleting value for key: '" << key << "'" << endl;
-        const char* ckey = key.c_str();
-        int len = strlen(ckey);
-        int keystart = 0;
-        bool reading = false;
-        bool readingval = false;
-        string rkey = "";
-        int i = 0;
 
-        for (char& c : data)
+        vector<DBEntry> keys = get_key_data(key);
+        int deletedbytes = 0;
+        if (keys.empty())
+            return false;
+
+        for (DBEntry e : keys)
         {
-            if (c == BEG)
+            if (e.key == key)
             {
-                if (!readingval) keystart = i;
-                reading = true;
-                // readingval = false;
-            }
-            if (c == META && reading)
-            {
-                reading = false;
                 if (*debug)
-                    cout << "finished reading key: '" << rkey << "' comparing to '" << key << "'" << endl;
-                if (rkey == key) readingval = true;
-                rkey = "";
+                {
+                    cout << "deleting key: " << e << endl;
+                    cout << "starting at " << e.keystart - deletedbytes - 1 << endl;
+                }
+                data.erase(data.begin() + e.keystart - deletedbytes - 1,
+                           data.begin() + e.keystart + e.entry_size() - deletedbytes + 1);
+                deletedbytes += e.entry_size() + 2;
             }
-            if (c == BEG && readingval) goto overwrotekey;
-            if (reading && c != BEG && c != META) rkey += c;
-            if (readingval) c = 0x00;
-            i++;
         }
-
-        if (readingval)
-            goto overwrotekey;
-
-        return false;
-
-overwrotekey:
-        if (*debug)
-            cout << "key starts at: " << keystart << " and is: " << len << " bytes long" << endl;
-        // add 5 to account for metadata flag and data
-        for (int i = keystart; i <= keystart + len + META_SIZE + 1; i++)
-            data.at(i) = 0x00;
 
         return true;
     }
@@ -554,15 +533,15 @@ checkmetadata:
         if (startindex.empty())
             return out;
 
-        for (const auto& [e, k]  : startindex)
+        for (auto const& x : startindex)
         {
             DBEntry entry;
-            entry.key = k;
-            entry.keystart = e;
+            entry.key = x.second;
+            entry.keystart = x.first;
 
             unsigned char buffer[META_SIZE];
             for (int i = 0; i < META_SIZE; i++)
-                buffer[i] = data.at(e + key.length() + i + 1);
+                buffer[i] = data.at(x.first + key.length() + i + 1);
             entry.metadata = to_int(buffer);
 
             if (entry.metadata == 0)
@@ -572,7 +551,7 @@ checkmetadata:
             else
                 entry.keytype = List;
 
-            int valstart = e + key.length() + META_SIZE + 2;
+            int valstart = x.first + key.length() + META_SIZE + 2;
             string val = "";
             int index = 0;
             while (data.size() != valstart + index &&
