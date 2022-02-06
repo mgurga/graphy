@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <iomanip>
 #include <random>
+#include <map>
 
 using namespace std;
 
@@ -149,7 +150,6 @@ public:
     {
         if (*debug)
             cout << "finding value for key: '" << key << "'" << endl;
-        const char* ckey = key.c_str();
         bool reading = false;
         bool readingval = false;
         bool readingmeta = false;
@@ -417,7 +417,7 @@ checkmetadata:
             {
                 if (*debug)
                 {
-                    cout << "delete key: " << e << endl;
+                    cout << "deleting key: " << e << endl;
                     cout << "starting at " << e.keystart - deletedbytes - 1 << endl;
                 }
                 data.erase(data.begin() + e.keystart - deletedbytes - 1,
@@ -447,6 +447,46 @@ checkmetadata:
         return keys.at(randkey).value;
     }
 
+    string randomkey()
+    {
+        vector<DBEntry> keys = get_key_data();
+        if (keys.empty())
+            return "(nil)";
+
+        if (*debug)
+            cout << "random keys to choose from: " << keys.size() << endl;
+
+        uniform_int_distribution<int> dist(0, keys.size() - 1);
+        int randkey = dist(gen);
+
+        if (*debug)
+            cout << "chose key number: " << randkey << endl;
+
+        return keys.at(randkey).key;
+    }
+
+    bool smove(string from, string to, string member)
+    {
+        vector<DBEntry> keys = get_key_data(from);
+        if (keys.empty())
+            return false;
+        vector<DBEntry> destkeys = get_key_data(to);
+        if (destkeys.empty() || destkeys.at(0).keytype != 1)
+            return false;
+
+        for (const DBEntry e : keys)
+            if (e.value == member)
+            {
+                if (*debug)
+                    cout << "member to move found: " << e << endl;
+                sadd(to, member);
+                srem(from, member);
+                return true;
+            }
+
+        return false;
+    }
+
     int key_start_index(string key)
     {
         bool reading = false;
@@ -472,12 +512,12 @@ checkmetadata:
         return -1;
     }
 
-    vector<int> key_start_index_multi(string key)
+    map<int, string> key_start_index_multi(string key = "")
     {
         bool reading = false;
         string rkey = "";
         int index = 0;
-        vector<int> out;
+        map<int, string> out;
 
         for (const char c : data)
         {
@@ -485,8 +525,8 @@ checkmetadata:
                 reading = true;
             if (c == META)
             {
-                if (rkey == key)
-                    out.push_back(index - key.length());
+                if (rkey == key || key == "")
+                    out[index - key.length()] = rkey;
                 rkey = "";
                 reading = false;
             }
@@ -507,17 +547,17 @@ checkmetadata:
         return out;
     }
 
-    vector<DBEntry> get_key_data(string key)
+    vector<DBEntry> get_key_data(string key = "")
     {
         vector<DBEntry> out;
-        vector<int> startindex = key_start_index_multi(key);
+        map<int, string> startindex = key_start_index_multi(key);
         if (startindex.empty())
             return out;
 
-        for (const int e : startindex)
+        for (const auto& [e, k]  : startindex)
         {
             DBEntry entry;
-            entry.key = key;
+            entry.key = k;
             entry.keystart = e;
 
             unsigned char buffer[META_SIZE];
@@ -550,7 +590,8 @@ checkmetadata:
         return out;
     }
 
-    void print_hex(int i) {
+    void print_hex(int i)
+    {
         cout << hex << setfill('0') << setw(2) << i << " " << endl;
     }
 

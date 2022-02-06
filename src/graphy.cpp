@@ -48,6 +48,7 @@ public:
             if (c11 == "sinterstore") return sinterstore(c.substr(11), db);
             if (c11 == "srandmember") return srandmember(c.substr(11), db);
             if (c10 == "sdiffstore") return sdiffstore(c.substr(10), db);
+            if (c9 == "randomkey") return randomkey(c.substr(9), db);
             if (c9 == "sismember") return sismember(c.substr(9), db);
             if (c8 == "smembers") return smembers(c.substr(8), db);
             if (c8 == "renamenx") return renamenx(c.substr(8), db);
@@ -60,6 +61,7 @@ public:
             if (c6 == "rename") return rename(c.substr(6), db);
             if (c5 == "scard") return scard(c.substr(5), db);
             if (c5 == "sdiff") return sdiff(c.substr(5), db);
+            if (c5 == "smove") return smove(c.substr(5), db);
             if (c4 == "srem") return srem(c.substr(4), db);
             if (c4 == "spop") return spop(c.substr(4), db);
             if (c4 == "incr") return incr(c.substr(4), db);

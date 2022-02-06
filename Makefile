@@ -2,13 +2,13 @@
 .PHONY: cleanbuild build run test
 
 cleanbuild: clean build
-test: build t
+test: test-build t
 run: build r
 
 t:
 	@echo ""
-	cd build
-	./graphy test
+	cd build/test
+	./test_graphy
 
 r:
 	@echo ""
@@ -19,7 +19,13 @@ build:
 	mkdir -p build
 	cd build
 	cmake ..
-	mold -run make -j $(shell nproc)
+	make -j $(shell nproc)
+
+test-build:
+	mkdir -p build
+	cd build
+	cmake .. -DBUILD_TESTING=true
+	make -j $(shell nproc)
 
 clean:
 	rm -rf build

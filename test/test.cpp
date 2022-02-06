@@ -9,7 +9,10 @@
 #include "../src/parser.cpp"
 #endif
 
-using namespace std;
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
 
 TEST(ParserTests, NoQuotes)
 {
@@ -387,10 +390,7 @@ TEST(GraphyTests, PopSet)
     g.command("sadd test a b c");
     g.command("set ending key");
     string res = g.command("spop test");
-    if (res == "\"a\"" || res == "\"b\"" || res == "\"c\"")
-        EXPECT_EQ(true, true);
-    else
-        EXPECT_EQ(true, false);
+    EXPECT_TRUE(res == "\"a\"" || res == "\"b\"" || res == "\"c\"");
 }
 
 TEST(GraphyTests, MultiplePopSet)
@@ -399,10 +399,7 @@ TEST(GraphyTests, MultiplePopSet)
     Formatter f;
     g.command("sadd test a b");
     string res = g.command("spop test 3");
-    if (res == f.redis_list({"a", "b"}) || res == f.redis_list({"b", "a"}))
-        EXPECT_EQ(true, true);
-    else
-        EXPECT_EQ(true, false);
+    EXPECT_TRUE(res == f.redis_list({"a", "b"}) || res == f.redis_list({"b", "a"}));
 }
 
 TEST(GraphyTests, RandomSetMember)
@@ -410,13 +407,27 @@ TEST(GraphyTests, RandomSetMember)
     Graphy g;
     g.command("sadd test a b c");
     string res = g.command("srandmember test");
-    if (res == "\"a\"" || res == "\"b\"" || res == "\"c\"")
-        EXPECT_EQ(true, true);
-    else
-        EXPECT_EQ(true, false);
+    EXPECT_TRUE(res == "\"a\"" || res == "\"b\"" || res == "\"c\"");
 }
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+TEST(GraphyTests, SetMove)
+{
+    Graphy g;
+    Formatter f;
+    g.command("sadd test a b c");
+    g.command("sadd dest d e");
+    string res = g.command("smove test dest a");
+    string resmem = g.command("smembers dest");
+    EXPECT_EQ("(integer) 1", res);
+    EXPECT_EQ(f.redis_list({"d", "e", "a"}), resmem);
+}
+
+TEST(GraphyTests, RandomKey)
+{
+    Graphy g;
+    Formatter f;
+    g.command("set hello world");
+    g.command("set ending key");
+    string res = g.command("randomkey");
+    EXPECT_TRUE(res == "hello" || res == "ending");
 }

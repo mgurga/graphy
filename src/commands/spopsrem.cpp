@@ -89,3 +89,15 @@ inline string srandmember(string s, Database* db)
         return f.redis_list(out);
     }
 }
+
+inline string smove(string s, Database* db)
+{
+    Parser p;
+    vector<string> args = p.parse(s);
+    if (args.size() != 3) return "ERR incorrect number of arguments";
+
+    if (db->smove(args.at(0), args.at(1), args.at(2)))
+        return "(integer) 1";
+    else
+        return "(integer) 0";
+}
