@@ -1,13 +1,10 @@
-#include "src/graphy.cpp"
-#include "UnitTest++/UnitTest++.h"
+#include "graphy.cpp"
 #include <stdio.h>
 #include <string.h>
 
 int main(int argc, char *argv[])
 {
-    if (argc > 1 && strcmp(argv[1], "test") == 0)
-        return UnitTest::RunAllTests();
-    else if (argc > 2 && (strcmp(argv[1], "r") == 0 || strcmp(argv[1], "rd") == 0))
+    if (argc > 2 && (strcmp(argv[1], "r") == 0 || strcmp(argv[1], "rd") == 0))
     {
         // run singular command
         string cmd = "";

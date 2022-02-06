@@ -1,8 +1,11 @@
-shell command: build
+shell: build
+    cd build && ./graphy
+
+graphy command: build
     cd build && ./graphy {{command}}
 
-test: build
-    cd build && ./graphy test
+test: build-testing
+    cd build/test/ && ./test_graphy
 
 run command: build
     cd build && ./graphy r {{command}}
@@ -15,7 +18,14 @@ build:
     mkdir -p build
     cd build
     cmake ..
-    mold -run make -j $(nproc)
+    make -j $(nproc)
+
+build-testing:
+    #!/usr/bin/env bash
+    mkdir -p build
+    cd build
+    cmake .. -DBUILD_TESTING=true
+    make -j $(nproc)
 
 clean:
     rm -rf build

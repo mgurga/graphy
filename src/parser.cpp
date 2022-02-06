@@ -23,9 +23,11 @@ public:
         if(debug)
             cout << "parsing: '" << s << "'" << endl;
 
-        // trim spaces at the beginning of the string
+        // trim spaces at the beginning and end of the string
         while (s.at(0) == ' ')
             s = s.substr(1);
+        while (s.at(s.size() - 1) == ' ')
+            s = s.substr(0, s.size() - 1);
 
         if(debug)
             cout << "trimmed: '" << s << "'" << endl;
