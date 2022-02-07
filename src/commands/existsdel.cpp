@@ -1,19 +1,11 @@
 #include <string>
 #include <iostream>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string exists(string s, Database* db)
+string Graphy::exists(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -27,7 +19,7 @@ inline string exists(string s, Database* db)
     return "(integer) " + to_string(successful);
 }
 
-inline string del(string s, Database* db)
+string Graphy::del(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

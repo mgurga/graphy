@@ -1,17 +1,9 @@
 #include <string>
 #include <ctime>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
+#include "../graphy.h"
 
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
-
-inline string echo(string s)
+string Graphy::echo(string s)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -19,7 +11,7 @@ inline string echo(string s)
     return args.at(0);
 }
 
-inline string randomkey(string s, Database* db)
+string Graphy::randomkey(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

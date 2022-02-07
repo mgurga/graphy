@@ -1,4 +1,4 @@
-#include "../src/graphy.cpp"
+#include "../src/graphy.h"
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <string>

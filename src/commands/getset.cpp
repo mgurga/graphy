@@ -1,23 +1,10 @@
 #include <string>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
-
-#ifndef FORMATTER_CPP
-#define FORMATTER_CPP
-#include "../formatter.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string get(string s, Database* db)
+string Graphy::get(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -25,7 +12,7 @@ inline string get(string s, Database* db)
     return db->get(args.at(0));
 }
 
-inline string set(string s, Database* db, bool* debug)
+string Graphy::set(string s, Database* db, bool* debug)
 {
     if (s.empty()) return "ERR incorrect number of arguments";
     Parser p;
@@ -39,7 +26,7 @@ inline string set(string s, Database* db, bool* debug)
     return "OK";
 }
 
-inline string getset(string s, Database* db, bool* debug)
+string Graphy::getset(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -55,7 +42,7 @@ inline string getset(string s, Database* db, bool* debug)
     return getres;
 }
 
-inline string mset(string s, Database* db, bool* debug)
+string Graphy::mset(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -69,7 +56,7 @@ inline string mset(string s, Database* db, bool* debug)
     return "OK";
 }
 
-inline string mget(string s, Database* db, bool* debug)
+string Graphy::mget(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -85,7 +72,7 @@ inline string mget(string s, Database* db, bool* debug)
     return f.redis_list(out);
 }
 
-inline string rename(string s, Database* db)
+string Graphy::rename(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -99,7 +86,7 @@ inline string rename(string s, Database* db)
     return "OK";
 }
 
-inline string renamenx(string s, Database* db)
+string Graphy::renamenx(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

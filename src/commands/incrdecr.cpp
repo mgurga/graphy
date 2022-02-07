@@ -1,18 +1,10 @@
 #include <string>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string incr(string s, Database* db)
+string Graphy::incr(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -26,7 +18,7 @@ inline string incr(string s, Database* db)
     return "(integer) " + to_string(out);
 }
 
-inline string incrby(string s, Database* db)
+string Graphy::incrby(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -40,7 +32,7 @@ inline string incrby(string s, Database* db)
     return "(integer) " + to_string(out);
 }
 
-inline string decr(string s, Database* db)
+string Graphy::decr(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -54,7 +46,7 @@ inline string decr(string s, Database* db)
     return "(integer) " + to_string(out);
 }
 
-inline string decrby(string s, Database* db)
+string Graphy::decrby(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

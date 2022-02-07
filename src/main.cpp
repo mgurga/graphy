@@ -1,6 +1,6 @@
-#include "graphy.cpp"
+#include "graphy.h"
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 int main(int argc, char *argv[])
 {

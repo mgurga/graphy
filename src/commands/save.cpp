@@ -1,19 +1,11 @@
 #include <string>
 #include <ctime>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string save(string s, Database* db, bool* debug)
+string Graphy::save(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -28,7 +20,7 @@ inline string save(string s, Database* db, bool* debug)
         return db->save(args.at(0) + ".gdb");
 }
 
-inline string dbsize(string s, Database* db, bool* debug)
+string Graphy::dbsize(string s, Database* db, bool* debug)
 {
     if (!s.empty()) return "ERR incorrect number of arguments";
     return "(integer) " + to_string(db->keys());

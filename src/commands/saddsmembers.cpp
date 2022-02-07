@@ -1,23 +1,10 @@
 #include <string>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
-
-#ifndef FORMATTER_CPP
-#define FORMATTER_CPP
-#include "../formatter.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string sadd(string s, Database* db)
+string Graphy::sadd(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -31,7 +18,7 @@ inline string sadd(string s, Database* db)
     return "(integer) " + to_string((args.size() - 1) - fails);
 }
 
-inline string sismember(string s, Database* db)
+string Graphy::sismember(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -39,7 +26,7 @@ inline string sismember(string s, Database* db)
     return (db->sismember(args.at(0), args.at(1))) ? "(integer) 1" : "(integer) 0";
 }
 
-inline string scard(string s, Database* db)
+string Graphy::scard(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -48,7 +35,7 @@ inline string scard(string s, Database* db)
     return "(integer) " + to_string(mem.size());
 }
 
-inline string smembers(string s, Database* db)
+string Graphy::smembers(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

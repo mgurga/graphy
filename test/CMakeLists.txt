@@ -13,10 +13,14 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 file(GLOB_RECURSE TESTFILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
+file(GLOB_RECURSE SRCFILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+list(REMOVE_ITEM SRCFILES ${PROJECT_SOURCE_DIR}/src/main.cpp)
+
 add_executable( ${TEST_PROJECT_NAME}
-                ${TESTFILES})
-target_link_libraries(${TEST_PROJECT_NAME}
-                      gtest_main)
+                ${TESTFILES}
+                ${SRCFILES})
+target_link_libraries( ${TEST_PROJECT_NAME}
+                       gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(${TEST_PROJECT_NAME})

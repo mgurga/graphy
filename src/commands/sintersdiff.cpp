@@ -1,23 +1,10 @@
 #include <string>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
-
-#ifndef FORMATTER_CPP
-#define FORMATTER_CPP
-#include "../formatter.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string sinter(string s, Database* db)
+string Graphy::sinter(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -42,7 +29,7 @@ inline string sinter(string s, Database* db)
     return f.redis_list(out);
 }
 
-inline string sinterstore(string s, Database* db)
+string Graphy::sinterstore(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -75,7 +62,7 @@ inline string sinterstore(string s, Database* db)
     return "(integer) " + to_string(out.size());
 }
 
-inline string sdiff(string s, Database* db)
+string Graphy::sdiff(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -99,7 +86,7 @@ inline string sdiff(string s, Database* db)
     return f.redis_list(vals);
 }
 
-inline string sdiffstore(string s, Database* db)
+string Graphy::sdiffstore(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);

@@ -1,24 +1,11 @@
 #include <string>
 #include <math.h>
 
-#ifndef DATABASE_CPP
-#define DATABASE_CPP
-#include "../database.cpp"
-#endif
-
-#ifndef PARSER_CPP
-#define PARSER_CPP
-#include "../parser.cpp"
-#endif
-
-#ifndef FORMATTER_CPP
-#define FORMATTER_CPP
-#include "../formatter.cpp"
-#endif
+#include "../graphy.h"
 
 using namespace std;
 
-inline string spop(string s, Database* db)
+string Graphy::spop(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -53,7 +40,7 @@ inline string spop(string s, Database* db)
     }
 }
 
-inline string srem(string s, Database* db)
+string Graphy::srem(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -65,7 +52,7 @@ inline string srem(string s, Database* db)
         return "(integer) 0";
 }
 
-inline string srandmember(string s, Database* db)
+string Graphy::srandmember(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
@@ -90,7 +77,7 @@ inline string srandmember(string s, Database* db)
     }
 }
 
-inline string smove(string s, Database* db)
+string Graphy::smove(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
