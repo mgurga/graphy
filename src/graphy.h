@@ -3,6 +3,7 @@
 
 #include <string>
 #include <locale>
+#include <algorithm>
 
 #ifndef DATABASE_CPP
 #define DATABASE_CPP
@@ -58,5 +59,7 @@ public:
     string srem(string s, Database* db);
     string srandmember(string s, Database* db);
     string smove(string s, Database* db);
+    string sunion(string s, Database* db);
+    string sunionstore(string s, Database* db);
 };
 #endif // GRAPHY_H

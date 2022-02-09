@@ -431,3 +431,25 @@ TEST(GraphyTests, RandomKey)
     string res = g.command("randomkey");
     EXPECT_TRUE(res == "hello" || res == "ending");
 }
+
+TEST(GraphyTests, SetUnion)
+{
+    Graphy g;
+    Formatter f;
+    g.command("sadd hello a b c");
+    g.command("sadd world c d e");
+    string res = g.command("sunion hello world");
+    EXPECT_EQ(f.redis_list({"a", "b", "c", "d", "e"}), res);
+}
+
+TEST(GraphyTests, StoreSetUnion)
+{
+    Graphy g;
+    Formatter f;
+    g.command("sadd hello a b c");
+    g.command("sadd world c d e");
+    string storeres = g.command("sunionstore key hello world");
+    string memres = g.command("smembers key");
+    EXPECT_EQ("(integer) 5", storeres);
+    EXPECT_EQ(f.redis_list({"a", "b", "c", "d", "e"}), memres);
+}

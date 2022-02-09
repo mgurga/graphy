@@ -33,6 +33,7 @@ string Graphy::command(string c)
     try
     {
         if (c11 == "sinterstore") return sinterstore(c.substr(11), db);
+        if (c11 == "sunionstore") return sunionstore(c.substr(11), db);
         if (c11 == "srandmember") return srandmember(c.substr(11), db);
         if (c10 == "sdiffstore") return sdiffstore(c.substr(10), db);
         if (c9 == "randomkey") return randomkey(c.substr(9), db);
@@ -45,6 +46,7 @@ string Graphy::command(string c)
         if (c6 == "decrby") return decrby(c.substr(6), db);
         if (c6 == "incrby") return incrby(c.substr(6), db);
         if (c6 == "sinter") return sinter(c.substr(6), db);
+        if (c6 == "sunion") return sunion(c.substr(6), db);
         if (c6 == "rename") return rename(c.substr(6), db);
         if (c5 == "scard") return scard(c.substr(5), db);
         if (c5 == "sdiff") return sdiff(c.substr(5), db);
