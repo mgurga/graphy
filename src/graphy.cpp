@@ -55,6 +55,7 @@ string Graphy::command(string c)
         if (c5 == "sdiff") return sdiff(c.substr(5), db);
         if (c5 == "smove") return smove(c.substr(5), db);
         if (c5 == "lpush") return lpush(c.substr(5), db);
+        if (c5 == "rpush") return rpush(c.substr(5), db);
         if (c4 == "srem") return srem(c.substr(4), db);
         if (c4 == "spop") return spop(c.substr(4), db);
         if (c4 == "incr") return incr(c.substr(4), db);

@@ -87,6 +87,7 @@ public:
     void add_dbentry(DBEntry dbe);
     bool delete_dbentry(DBEntry dbe);
     int lpush(string list, string val);
+    int rpush(string list, string val);
     vector<string> lrange(string list, int start, int stop);
 
     void print_hex(int i);

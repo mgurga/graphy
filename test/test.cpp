@@ -478,3 +478,13 @@ TEST(GraphyTests, LeftPush)
     Formatter f;
     EXPECT_EQ(f.redis_list({"hello", "world"}), res);
 }
+
+TEST(GraphyTests, RightPush)
+{
+    Graphy g;
+    g.command("rpush l hello");
+    g.command("rpush l world");
+    string res = g.command("lrange l -100 100");
+    Formatter f;
+    EXPECT_EQ(f.redis_list({"hello", "world"}), res);
+}

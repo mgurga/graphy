@@ -19,6 +19,25 @@ int Database::lpush(string list, string val)
     return listitems.size() + 1;
 }
 
+int Database::rpush(string list, string val)
+{
+    vector<DBEntry> listitems = get_key_data(list);
+    if (listitems.empty())
+    {
+        add_dbentry(DBEntry(list, val, 2));
+        return 1;
+    }
+
+    int lastsize = 0;
+    for (DBEntry e : listitems)
+        if (e.metadata > lastsize)
+            lastsize = e.metadata;
+
+    add_dbentry(DBEntry(list, val, lastsize + 1));
+
+    return listitems.size() + 1;
+}
+
 vector<string> Database::lrange(string list, int start, int stop)
 {
     vector<DBEntry> listitems = get_key_data(list);
