@@ -62,5 +62,7 @@ public:
     string sunion(string s, Database* db);
     string sunionstore(string s, Database* db);
     string flushdb(Database* db);
+    string lpush(string s, Database* db);
+    string lrange(string s, Database* db);
 };
 #endif // GRAPHY_H

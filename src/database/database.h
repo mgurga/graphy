@@ -49,7 +49,11 @@ public:
     int keystart;
     KeyType keytype;
 
+    DBEntry();
+    DBEntry(string key, string val, uint meta);
+
     friend ostream& operator<<(ostream &out, const DBEntry& data);
+    friend bool operator==(const DBEntry& a, const DBEntry& b);
     int entry_size();
 };
 
@@ -80,6 +84,10 @@ public:
     bool srem(string setname, string val);
     vector<DBEntry> get_key_data(string key = "");
     void flushdb();
+    void add_dbentry(DBEntry dbe);
+    bool delete_dbentry(DBEntry dbe);
+    int lpush(string list, string val);
+    vector<string> lrange(string list, int start, int stop);
 
     void print_hex(int i);
     void print_string_bytes(string s);

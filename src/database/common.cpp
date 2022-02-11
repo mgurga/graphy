@@ -271,3 +271,59 @@ vector<DBEntry> Database::get_key_data(string key)
 
     return out;
 }
+
+void Database::add_dbentry(DBEntry dbe)
+{
+    if (*debug)
+        cout << "key: '" << dbe.key << "' to value: '" << dbe.value << "'" << endl;
+    // beginning byte
+    data.push_back(BEG);
+
+    // add key
+    const char* ckey = dbe.key.data();
+    int len = strlen(ckey);
+    for (int i = 0; i < len; i++)
+        data.push_back(ckey[i]);
+
+    data.push_back(META);
+
+    // add metadata
+    unsigned char bytes[META_SIZE];
+    to_bytes(dbe.metadata, bytes);
+    for (int i = 0; i < META_SIZE; i++)
+        data.push_back(bytes[i]);
+
+    data.push_back(VAL);
+
+    // add value
+    const char* cval = dbe.value.data();
+    len = strlen(cval);
+    for (int i = 0; i < len; i++)
+        data.push_back(cval[i]);
+}
+
+bool Database::delete_dbentry(DBEntry dbe)
+{
+    vector<DBEntry> keys = get_key_data(dbe.key);
+    int deletedbytes = 0;
+    if (keys.empty())
+        return false;
+
+    for (DBEntry e : keys)
+    {
+        if (e == dbe)
+        {
+            if (*debug)
+            {
+                cout << "deleting key: " << e << endl;
+                cout << "starting at " << e.keystart - deletedbytes - 1 << endl;
+            }
+            data.erase(data.begin() + e.keystart - deletedbytes - 1,
+                       data.begin() + e.keystart + e.entry_size() - deletedbytes + 1);
+            deletedbytes += e.entry_size() + 2;
+            return true;
+        }
+    }
+
+    return false;
+}

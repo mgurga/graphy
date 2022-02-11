@@ -468,3 +468,13 @@ TEST(GraphyTests, FlushDB)
     EXPECT_EQ("(nil)", keyexistsres);
     EXPECT_EQ("bo", getres);
 }
+
+TEST(GraphyTests, LeftPush)
+{
+    Graphy g;
+    g.command("lpush l world");
+    g.command("lpush l hello");
+    string res = g.command("lrange l -100 100");
+    Formatter f;
+    EXPECT_EQ(f.redis_list({"hello", "world"}), res);
+}

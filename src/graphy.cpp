@@ -50,9 +50,11 @@ string Graphy::command(string c)
         if (c6 == "sinter") return sinter(c.substr(6), db);
         if (c6 == "sunion") return sunion(c.substr(6), db);
         if (c6 == "rename") return rename(c.substr(6), db);
+        if (c6 == "lrange") return lrange(c.substr(6), db);
         if (c5 == "scard") return scard(c.substr(5), db);
         if (c5 == "sdiff") return sdiff(c.substr(5), db);
         if (c5 == "smove") return smove(c.substr(5), db);
+        if (c5 == "lpush") return lpush(c.substr(5), db);
         if (c4 == "srem") return srem(c.substr(4), db);
         if (c4 == "spop") return spop(c.substr(4), db);
         if (c4 == "incr") return incr(c.substr(4), db);
