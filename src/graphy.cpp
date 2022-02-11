@@ -25,6 +25,7 @@ string Graphy::command(string c)
     string c4 = to_lower(c.substr(0, 4));
     string c5 = to_lower(c.substr(0, 5));
     string c6 = to_lower(c.substr(0, 6));
+    string c7 = to_lower(c.substr(0, 7));
     string c8 = to_lower(c.substr(0, 8));
     string c9 = to_lower(c.substr(0, 9));
     string c10 = to_lower(c.substr(0, 10));
@@ -40,6 +41,7 @@ string Graphy::command(string c)
         if (c9 == "sismember") return sismember(c.substr(9), db);
         if (c8 == "smembers") return smembers(c.substr(8), db);
         if (c8 == "renamenx") return renamenx(c.substr(8), db);
+        if (c7 == "flushdb") return flushdb(db);
         if (c6 == "getset") return getset(c.substr(6), db, &debug);
         if (c6 == "exists") return exists(c.substr(6), db);
         if (c6 == "dbsize") return dbsize(c.substr(6), db, &debug);

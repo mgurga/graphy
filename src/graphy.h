@@ -61,5 +61,6 @@ public:
     string smove(string s, Database* db);
     string sunion(string s, Database* db);
     string sunionstore(string s, Database* db);
+    string flushdb(Database* db);
 };
 #endif // GRAPHY_H

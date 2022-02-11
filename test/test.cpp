@@ -453,3 +453,18 @@ TEST(GraphyTests, StoreSetUnion)
     EXPECT_EQ("(integer) 5", storeres);
     EXPECT_EQ(f.redis_list({"a", "b", "c", "d", "e"}), memres);
 }
+
+TEST(GraphyTests, FlushDB)
+{
+    Graphy g;
+    g.command("set hello world");
+    g.command("set foo bar");
+    g.command("sadd test a b c");
+    string res = g.command("flushdb");
+    string keyexistsres = g.command("get hello");
+    g.command("set baz bo");
+    string getres = g.command("get baz");
+    EXPECT_EQ("OK", res);
+    EXPECT_EQ("(nil)", keyexistsres);
+    EXPECT_EQ("bo", getres);
+}

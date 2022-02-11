@@ -569,6 +569,11 @@ checkmetadata:
         return out;
     }
 
+    void flushdb()
+    {
+        data.erase(data.begin() + 7, data.end());
+    }
+
     void print_hex(int i)
     {
         cout << hex << setfill('0') << setw(2) << i << " " << endl;
