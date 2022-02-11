@@ -3,7 +3,7 @@
 
 #ifndef DATABASE_CPP
 #define DATABASE_CPP
-#include "database.cpp"
+#include "database/database.h"
 #endif
 
 #include "graphy.h"
