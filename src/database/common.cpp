@@ -229,7 +229,7 @@ int Database::keys()
     return out;
 }
 
-vector<DBEntry> Database::get_key_data(string key)
+vector<DBEntry> Database::get_key_data(string key, KeyType type)
 {
     vector<DBEntry> out;
     map<int, string> startindex = key_start_index_multi(key);
@@ -266,7 +266,8 @@ vector<DBEntry> Database::get_key_data(string key)
         }
         entry.value = val;
 
-        out.push_back(entry);
+        if (type == Any || type == entry.keytype)
+            out.push_back(entry);
     }
 
     return out;

@@ -488,3 +488,12 @@ TEST(GraphyTests, RightPush)
     Formatter f;
     EXPECT_EQ(f.redis_list({"hello", "world"}), res);
 }
+
+TEST(GraphyTests, ListLength)
+{
+    Graphy g;
+    g.command("rpush l hello");
+    g.command("rpush l world");
+    string res = g.command("llen l");
+    EXPECT_EQ("(integer) 2", res);
+}

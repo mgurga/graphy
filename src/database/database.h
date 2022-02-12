@@ -37,7 +37,8 @@ TODO: this flag wastes 3 bytes if the value is a key value pair or set
 enum KeyType {
     KeyValue,
     Set,
-    List
+    List,
+    Any
 };
 
 class DBEntry
@@ -82,13 +83,14 @@ public:
     map<int, string> key_start_index_multi(string key = "");
     int keys();
     bool srem(string setname, string val);
-    vector<DBEntry> get_key_data(string key = "");
+    vector<DBEntry> get_key_data(string key = "", KeyType type = Any);
     void flushdb();
     void add_dbentry(DBEntry dbe);
     bool delete_dbentry(DBEntry dbe);
     int lpush(string list, string val);
     int rpush(string list, string val);
     vector<string> lrange(string list, int start, int stop);
+    int llen(string key);
 
     void print_hex(int i);
     void print_string_bytes(string s);
