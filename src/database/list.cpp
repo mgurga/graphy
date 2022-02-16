@@ -1,4 +1,5 @@
 #include "database.h"
+#include <algorithm>
 
 int Database::lpush(string list, string val)
 {
@@ -62,4 +63,72 @@ int Database::llen(string key)
 {
     vector<DBEntry> listitems = get_key_data(key, List);
     return listitems.size();
+}
+
+int Database::lrem(string key, int count, string element)
+{
+    vector<DBEntry> listitems = sort_list(get_key_data(key, List));
+    vector<DBEntry> out;
+    int removed = 0;
+    if (listitems.empty())
+        return 0;
+
+    if (count < 0)
+    {
+        for (int i = listitems.size() - 1; i >= 0; i--)
+        {
+            if (count != 0)
+            {
+                if (listitems.at(i).value == element)
+                    count++;
+                if (count != 0)
+                    out.push_back(listitems.at(i));
+            }
+            else if (count == 0)
+                out.push_back(listitems.at(i));
+        }
+        reverse(out.begin(), out.end());
+    }
+    else if (count > 0)
+    {
+        for (int i = 0; i < listitems.size() - 1; i++)
+        {
+            if (count != 0)
+            {
+                if (listitems.at(i).value == element)
+                    count--;
+                if (count != 0)
+                    out.push_back(listitems.at(i));
+            }
+            else if (count == 0)
+                out.push_back(listitems.at(i));
+        }
+    }
+    else
+    {
+        for (int i = 0; i < listitems.size() - 1; i++)
+            if (listitems.at(i).value != element)
+                out.push_back(listitems.at(i));
+    }
+
+    for (DBEntry &e : listitems)
+        delete_dbentry(e);
+    for (int i = 0; i < out.size(); i++)
+    {
+        DBEntry e = out.at(i);
+        e.metadata = i + 2;
+        add_dbentry(e);
+    }
+
+    return out.size() - 1;
+}
+
+vector<DBEntry> Database::sort_list(vector<DBEntry> e)
+{
+    vector<DBEntry> out;
+    for (int i = 0; i < e.size(); i++)
+        for (DBEntry &a : e)
+            if (a.metadata == i + 2)
+                out.push_back(a);
+    return out;
 }

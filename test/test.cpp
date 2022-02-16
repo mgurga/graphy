@@ -497,3 +497,17 @@ TEST(GraphyTests, ListLength)
     string res = g.command("llen l");
     EXPECT_EQ("(integer) 2", res);
 }
+
+TEST(GraphyTests, ListRemove)
+{
+    Graphy g;
+    g.command("rpush l hello");
+    g.command("rpush l hello");
+    g.command("rpush l foo");
+    g.command("rpush l hello");
+    string res = g.command("lrem l -2 hello");
+    string rangeres = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("(integer) 2", res);
+    EXPECT_EQ(f.redis_list({"hello", "foo"}), rangeres);
+}

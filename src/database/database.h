@@ -91,7 +91,9 @@ public:
     int rpush(string list, string val);
     vector<string> lrange(string list, int start, int stop);
     int llen(string key);
+    int lrem(string key, int count, string element);
 
+    vector<DBEntry> sort_list(vector<DBEntry> e);
     void print_hex(int i);
     void print_string_bytes(string s);
     unsigned int to_int(unsigned char bytes[META_SIZE]);

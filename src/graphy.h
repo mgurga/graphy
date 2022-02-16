@@ -66,5 +66,6 @@ public:
     string lrange(string s, Database* db);
     string rpush(string s, Database* db);
     string llen(string s, Database* db);
+    string lrem(string s, Database* db);
 };
 #endif // GRAPHY_H
