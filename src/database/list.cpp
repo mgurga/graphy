@@ -110,6 +110,25 @@ int Database::lrem(string key, int count, string element)
     return listitems.size() - out.size();
 }
 
+bool Database::lset(string key, int index, string element)
+{
+    vector<DBEntry> listitems = get_key_data(key, List);
+
+    if (index < 0)
+        index = listitems.size() + index;
+
+    for (DBEntry &e : listitems)
+        if (e.metadata == index + 2)
+        {
+            delete_dbentry(e);
+            e.value = element;
+            add_dbentry(e);
+            return true;
+        }
+
+    return false;
+}
+
 vector<DBEntry> Database::sort_list(vector<DBEntry> e)
 {
     vector<DBEntry> out;

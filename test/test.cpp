@@ -539,3 +539,16 @@ TEST(GraphyTests, ListRemove)
     EXPECT_EQ("(integer) 2", res);
     EXPECT_EQ(f.redis_list({"hello", "foo"}), rangeres);
 }
+
+TEST(GraphyTests, ListSet)
+{
+    Graphy g;
+    g.command("rpush l one two three");
+    string lset1 = g.command("lset l 0 four");
+    string lset2 = g.command("lset l -2 five");
+    string lset_members = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("OK", lset1);
+    EXPECT_EQ("OK", lset2);
+    EXPECT_EQ(f.redis_list({"four", "five", "three"}), lset_members);
+}
