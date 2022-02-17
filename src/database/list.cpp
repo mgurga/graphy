@@ -51,7 +51,7 @@ vector<string> Database::lrange(string list, int start, int stop)
     if (stop < 0)
         stop = listitems.size() + stop;
 
-    for (int i = start; i < stop; i++)
+    for (int i = start; i <= stop; i++)
         for (DBEntry &e : listitems)
             if (e.metadata - 2 == i)
                 out.push_back(e.value);
@@ -69,47 +69,34 @@ int Database::lrem(string key, int count, string element)
 {
     vector<DBEntry> listitems = sort_list(get_key_data(key, List));
     vector<DBEntry> out;
-    int removed = 0;
     if (listitems.empty())
         return 0;
 
     if (count < 0)
     {
         for (int i = listitems.size() - 1; i >= 0; i--)
-        {
-            if (count != 0)
-            {
-                if (listitems.at(i).value == element)
-                    count++;
-                if (count != 0)
-                    out.push_back(listitems.at(i));
-            }
+            if (listitems.at(i).value == element && count != 0)
+                count++;
+            else if (listitems.at(i).value != element)
+                out.push_back(listitems.at(i));
             else if (count == 0)
                 out.push_back(listitems.at(i));
-        }
         reverse(out.begin(), out.end());
     }
     else if (count > 0)
     {
-        for (int i = 0; i < listitems.size() - 1; i++)
-        {
-            if (count != 0)
-            {
-                if (listitems.at(i).value == element)
-                    count--;
-                if (count != 0)
-                    out.push_back(listitems.at(i));
-            }
+        for (int i = 0; i <= listitems.size() - 1; i++)
+            if (listitems.at(i).value == element && count != 0)
+                count--;
+            else if (listitems.at(i).value != element)
+                out.push_back(listitems.at(i));
             else if (count == 0)
                 out.push_back(listitems.at(i));
-        }
     }
     else
-    {
         for (int i = 0; i < listitems.size() - 1; i++)
             if (listitems.at(i).value != element)
                 out.push_back(listitems.at(i));
-    }
 
     for (DBEntry &e : listitems)
         delete_dbentry(e);
@@ -120,7 +107,7 @@ int Database::lrem(string key, int count, string element)
         add_dbentry(e);
     }
 
-    return out.size() - 1;
+    return listitems.size() - out.size();
 }
 
 vector<DBEntry> Database::sort_list(vector<DBEntry> e)

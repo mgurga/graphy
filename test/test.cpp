@@ -489,6 +489,34 @@ TEST(GraphyTests, RightPush)
     EXPECT_EQ(f.redis_list({"hello", "world"}), res);
 }
 
+TEST(GraphyTests, LRange)
+{
+    Graphy g;
+    g.command("rpush mylist one two three");
+    string lrange_zero_zero = g.command("lrange mylist 0 0");
+    string lrange_n3_2 = g.command("lrange mylist -3 2");
+    string lrange_n100_100 = g.command("lrange mylist -100 100");
+    string lrange_empty = g.command("lrange mylist 5 10");
+    Formatter f;
+    EXPECT_EQ(f.redis_list({"one"}), lrange_zero_zero);
+    EXPECT_EQ(f.redis_list({"one", "two", "three"}), lrange_n3_2);
+    EXPECT_EQ(f.redis_list({"one", "two", "three"}), lrange_n100_100);
+    EXPECT_EQ(f.redis_list({}), lrange_empty);
+}
+
+TEST(GraphyTests, LRangeColors)
+{
+    Graphy g;
+    g.command("lpush colors red red red green");
+    string lrange_response = g.command("lrange colors 0 -1");
+    string lrem_red = g.command("lrem colors 1 red");
+    string lrem_members = g.command("lrange colors 0 -1");
+    Formatter f;
+    EXPECT_EQ(f.redis_list({"green", "red", "red", "red"}), lrange_response);
+    EXPECT_EQ("(integer) 1", lrem_red);
+    EXPECT_EQ(f.redis_list({"green", "red", "red"}), lrem_members);
+}
+
 TEST(GraphyTests, ListLength)
 {
     Graphy g;

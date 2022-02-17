@@ -18,7 +18,7 @@ public:
     string redis_list(vector<string> arr)
     {
         if (arr.empty())
-            return "empty array";
+            return "(empty list or set)";
         string out;
         int index = 0;
 
