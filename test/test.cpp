@@ -552,3 +552,29 @@ TEST(GraphyTests, ListSet)
     EXPECT_EQ("OK", lset2);
     EXPECT_EQ(f.redis_list({"four", "five", "three"}), lset_members);
 }
+
+TEST(GraphyTests, ListLeftPop)
+{
+    Graphy g;
+    g.command("rpush l one two three four five");
+    string lpop1 = g.command("lpop l");
+    string lpop2 = g.command("lpop l");
+    string list_members = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("one", lpop1);
+    EXPECT_EQ("two", lpop2);
+    EXPECT_EQ(f.redis_list({"three", "four", "five"}), list_members);
+}
+
+TEST(GraphyTests, ListRightPop)
+{
+    Graphy g;
+    g.command("rpush l one two three four five");
+    string lpop1 = g.command("rpop l");
+    string lpop2 = g.command("rpop l");
+    string list_members = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("five", lpop1);
+    EXPECT_EQ("four", lpop2);
+    EXPECT_EQ(f.redis_list({"one", "two", "three"}), list_members);
+}

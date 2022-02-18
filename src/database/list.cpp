@@ -1,6 +1,16 @@
 #include "database.h"
 #include <algorithm>
 
+vector<DBEntry> Database::sort_list(vector<DBEntry> e)
+{
+    vector<DBEntry> out;
+    for (int i = 0; i < e.size(); i++)
+        for (DBEntry &a : e)
+            if (a.metadata == i + 2)
+                out.push_back(a);
+    return out;
+}
+
 int Database::lpush(string list, string val)
 {
     vector<DBEntry> listitems = get_key_data(list, List);
@@ -129,12 +139,36 @@ bool Database::lset(string key, int index, string element)
     return false;
 }
 
-vector<DBEntry> Database::sort_list(vector<DBEntry> e)
+vector<string> Database::lpop(string key)
 {
-    vector<DBEntry> out;
-    for (int i = 0; i < e.size(); i++)
-        for (DBEntry &a : e)
-            if (a.metadata == i + 2)
-                out.push_back(a);
+    vector<DBEntry> listitems = sort_list(get_key_data(key, List));
+    vector<string> out;
+    if (listitems.empty())
+        return out;
+
+    out.push_back(listitems.at(0).value);
+    delete_dbentry(listitems.at(0));
+    listitems.erase(listitems.begin());
+
+    for (DBEntry &e : listitems)
+    {
+        delete_dbentry(e);
+        e.metadata--;
+        add_dbentry(e);
+    }
+
+    return out;
+}
+
+vector<string> Database::rpop(string key)
+{
+    vector<DBEntry> listitems = sort_list(get_key_data(key, List));
+    vector<string> out;
+    if (listitems.empty())
+        return out;
+
+    out.push_back(listitems.at(listitems.size() - 1).value);
+    delete_dbentry(listitems.at(listitems.size() - 1));
+
     return out;
 }
