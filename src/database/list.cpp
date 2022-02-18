@@ -172,3 +172,15 @@ vector<string> Database::rpop(string key)
 
     return out;
 }
+
+string Database::lindex(string key, int index)
+{
+    vector<DBEntry> listitems = sort_list(get_key_data(key, List));
+
+    if (index < 0)
+        index = listitems.size() + index;
+    if (index > listitems.size() - 1)
+        return "(nil)";
+
+    return listitems.at(index).value;
+}

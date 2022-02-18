@@ -578,3 +578,15 @@ TEST(GraphyTests, ListRightPop)
     EXPECT_EQ("four", lpop2);
     EXPECT_EQ(f.redis_list({"one", "two", "three"}), list_members);
 }
+
+TEST(GraphyTests, ListIndex)
+{
+    Graphy g;
+    g.command("rpush l hello world 2");
+    string index_1 = g.command("lindex l 0");
+    string index_2 = g.command("lindex l -1");
+    string index_null = g.command("lindex l 5");
+    EXPECT_EQ("hello", index_1);
+    EXPECT_EQ("2", index_2);
+    EXPECT_EQ("(nil)", index_null);
+}

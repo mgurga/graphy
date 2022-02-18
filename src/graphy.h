@@ -70,5 +70,6 @@ public:
     string lset(string s, Database* db);
     string lpop(string s, Database* db);
     string rpop(string s, Database* db);
+    string lindex(string s, Database* db);
 };
 #endif // GRAPHY_H

@@ -95,6 +95,7 @@ public:
     bool lset(string key, int index, string element);
     vector<string> lpop(string key);
     vector<string> rpop(string key);
+    string lindex(string key, int index);
 
     vector<DBEntry> sort_list(vector<DBEntry> e);
     void print_hex(int i);

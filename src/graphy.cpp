@@ -51,6 +51,7 @@ string Graphy::command(string c)
         if (c6 == "sunion") return sunion(c.substr(6), db);
         if (c6 == "rename") return rename(c.substr(6), db);
         if (c6 == "lrange") return lrange(c.substr(6), db);
+        if (c6 == "lindex") return lindex(c.substr(6), db);
         if (c5 == "scard") return scard(c.substr(5), db);
         if (c5 == "sdiff") return sdiff(c.substr(5), db);
         if (c5 == "smove") return smove(c.substr(5), db);
