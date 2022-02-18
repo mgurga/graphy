@@ -590,3 +590,25 @@ TEST(GraphyTests, ListIndex)
     EXPECT_EQ("2", index_2);
     EXPECT_EQ("(nil)", index_null);
 }
+
+TEST(GraphyTests, ListTrim)
+{
+    Graphy g;
+    g.command("rpush l one two three");
+    string ltrim_response = g.command("ltrim l 1 -1");
+    string ltrim_range = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("OK", ltrim_response);
+    EXPECT_EQ(f.redis_list({"two", "three"}), ltrim_range);
+}
+
+TEST(GraphyTests, ListTrim2)
+{
+    Graphy g;
+    g.command("rpush l hello hello foo bar");
+    string ltrim_response = g.command("ltrim l 1 -1");
+    string ltrim_range = g.command("lrange l 0 -1");
+    Formatter f;
+    EXPECT_EQ("OK", ltrim_response);
+    EXPECT_EQ(f.redis_list({"hello", "foo", "bar"}), ltrim_range);
+}

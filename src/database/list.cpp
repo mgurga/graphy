@@ -51,7 +51,7 @@ int Database::rpush(string list, string val)
 
 vector<string> Database::lrange(string list, int start, int stop)
 {
-    vector<DBEntry> listitems = get_key_data(list, List);
+    vector<DBEntry> listitems = sort_list(get_key_data(list, List));
     vector<string> out;
     if (listitems.empty())
         return out;
@@ -183,4 +183,30 @@ string Database::lindex(string key, int index)
         return "(nil)";
 
     return listitems.at(index).value;
+}
+
+bool Database::ltrim(string key, int start, int stop)
+{
+    vector<DBEntry> listitems = sort_list(get_key_data(key, List));
+    vector<DBEntry> out;
+    if (listitems.empty())
+        return false;
+
+    if (start < 0)
+        start = listitems.size() + start;
+    if (stop < 0)
+        stop = listitems.size() + stop;
+
+    for (DBEntry &e : listitems)
+        delete_dbentry(e);
+
+    int index = 0;
+    for (int i = start; i <= stop; i++)
+    {
+        listitems.at(i).metadata = index + 2;
+        add_dbentry(listitems.at(i));
+        index++;
+    }
+
+    return true;
 }
