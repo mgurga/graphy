@@ -8,6 +8,6 @@ string Graphy::lrange(string s, Database *db)
 
     vector<string> items = db->lrange(args.at(0), stoi(args.at(1)), stoi(args.at(2)));
 
-    Formatter f;
+    Utils f;
     return f.redis_list(items);
 }

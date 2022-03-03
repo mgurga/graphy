@@ -12,6 +12,6 @@ string Graphy::mget(string s, Database* db, bool* debug)
             cout << "getting: " << args.at(i) << endl;
         out.push_back(db->get(args.at(i)));
     }
-    Formatter f;
+    Utils f;
     return f.redis_list(out);
 }

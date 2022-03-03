@@ -47,6 +47,46 @@ TEST(ParserTests, QuotesLeadingSpaces)
 }
 
 
+TEST(MatcherTests, QuestionMark)
+{
+    Utils u;
+    EXPECT_EQ(u.matches("hello", "h?llo"), true);
+    EXPECT_EQ(u.matches("hallo", "h?llo"), true);
+    EXPECT_EQ(u.matches("hxallo", "h?llo"), false);
+}
+
+TEST(MatcherTests, Wildcard)
+{
+    Utils u;
+    EXPECT_EQ(u.matches("heeeeeeeeeeeeeeeeello", "h*llo"), true);
+    EXPECT_EQ(u.matches("hllo", "h*llo"), true);
+    EXPECT_EQ(u.matches("hxxxxxxllo", "h*llo"), true);
+}
+
+TEST(MatcherTests, MultipleLetters)
+{
+    Utils u;
+    EXPECT_EQ(u.matches("hello", "h[aei]llo"), true);
+    EXPECT_EQ(u.matches("hillo", "h[aei]llo"), true);
+    EXPECT_EQ(u.matches("hxllo", "h[aei]llo"), false);
+}
+
+TEST(MatcherTests, LetterRange)
+{
+    Utils u;
+    EXPECT_EQ(u.matches("hallo", "h[a-m]llo"), true);
+    EXPECT_EQ(u.matches("hlllo", "h[a-m]llo"), true);
+    EXPECT_EQ(u.matches("hzllo", "h[a-m]llo"), false);
+}
+
+TEST(MatcherTests, LetterRangeCaret)
+{
+    Utils u;
+    EXPECT_EQ(u.matches("hallo", "h[^e]llo"), true);
+    EXPECT_EQ(u.matches("hlllo", "h[^e]llo"), true);
+}
+
+
 TEST(GraphyTests, Sanity)
 {
     EXPECT_EQ(1, 1);
@@ -364,7 +404,7 @@ TEST(GraphyTests, MultipleSet)
 TEST(GraphyTests, MultipleGet)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("mset key1 Hello key2 World");
     string res = g.command("mget key1 key2 nonexisting");
     EXPECT_EQ(f.redis_list({"Hello", "World", "(nil)"}), res);
@@ -396,7 +436,7 @@ TEST(GraphyTests, PopSet)
 TEST(GraphyTests, MultiplePopSet)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("sadd test a b");
     string res = g.command("spop test 3");
     EXPECT_TRUE(res == f.redis_list({"a", "b"}) || res == f.redis_list({"b", "a"}));
@@ -413,7 +453,7 @@ TEST(GraphyTests, RandomSetMember)
 TEST(GraphyTests, SetMove)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("sadd test a b c");
     g.command("sadd dest d e");
     string res = g.command("smove test dest a");
@@ -425,7 +465,7 @@ TEST(GraphyTests, SetMove)
 TEST(GraphyTests, RandomKey)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("set hello world");
     g.command("set ending key");
     string res = g.command("randomkey");
@@ -435,7 +475,7 @@ TEST(GraphyTests, RandomKey)
 TEST(GraphyTests, SetUnion)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("sadd hello a b c");
     g.command("sadd world c d e");
     string res = g.command("sunion hello world");
@@ -445,7 +485,7 @@ TEST(GraphyTests, SetUnion)
 TEST(GraphyTests, StoreSetUnion)
 {
     Graphy g;
-    Formatter f;
+    Utils f;
     g.command("sadd hello a b c");
     g.command("sadd world c d e");
     string storeres = g.command("sunionstore key hello world");
@@ -475,7 +515,7 @@ TEST(GraphyTests, LeftPush)
     g.command("lpush l world");
     g.command("lpush l hello");
     string res = g.command("lrange l -100 100");
-    Formatter f;
+    Utils f;
     EXPECT_EQ(f.redis_list({"hello", "world"}), res);
 }
 
@@ -485,7 +525,7 @@ TEST(GraphyTests, RightPush)
     g.command("rpush l hello");
     g.command("rpush l world");
     string res = g.command("lrange l -100 100");
-    Formatter f;
+    Utils f;
     EXPECT_EQ(f.redis_list({"hello", "world"}), res);
 }
 
@@ -497,7 +537,7 @@ TEST(GraphyTests, LRange)
     string lrange_n3_2 = g.command("lrange mylist -3 2");
     string lrange_n100_100 = g.command("lrange mylist -100 100");
     string lrange_empty = g.command("lrange mylist 5 10");
-    Formatter f;
+    Utils f;
     EXPECT_EQ(f.redis_list({"one"}), lrange_zero_zero);
     EXPECT_EQ(f.redis_list({"one", "two", "three"}), lrange_n3_2);
     EXPECT_EQ(f.redis_list({"one", "two", "three"}), lrange_n100_100);
@@ -511,7 +551,7 @@ TEST(GraphyTests, LRangeColors)
     string lrange_response = g.command("lrange colors 0 -1");
     string lrem_red = g.command("lrem colors 1 red");
     string lrem_members = g.command("lrange colors 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ(f.redis_list({"green", "red", "red", "red"}), lrange_response);
     EXPECT_EQ("(integer) 1", lrem_red);
     EXPECT_EQ(f.redis_list({"green", "red", "red"}), lrem_members);
@@ -535,7 +575,7 @@ TEST(GraphyTests, ListRemove)
     g.command("rpush l hello");
     string res = g.command("lrem l -2 hello");
     string rangeres = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("(integer) 2", res);
     EXPECT_EQ(f.redis_list({"hello", "foo"}), rangeres);
 }
@@ -547,7 +587,7 @@ TEST(GraphyTests, ListSet)
     string lset1 = g.command("lset l 0 four");
     string lset2 = g.command("lset l -2 five");
     string lset_members = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("OK", lset1);
     EXPECT_EQ("OK", lset2);
     EXPECT_EQ(f.redis_list({"four", "five", "three"}), lset_members);
@@ -560,7 +600,7 @@ TEST(GraphyTests, ListLeftPop)
     string lpop1 = g.command("lpop l");
     string lpop2 = g.command("lpop l");
     string list_members = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("one", lpop1);
     EXPECT_EQ("two", lpop2);
     EXPECT_EQ(f.redis_list({"three", "four", "five"}), list_members);
@@ -573,7 +613,7 @@ TEST(GraphyTests, ListRightPop)
     string lpop1 = g.command("rpop l");
     string lpop2 = g.command("rpop l");
     string list_members = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("five", lpop1);
     EXPECT_EQ("four", lpop2);
     EXPECT_EQ(f.redis_list({"one", "two", "three"}), list_members);
@@ -597,7 +637,7 @@ TEST(GraphyTests, ListTrim)
     g.command("rpush l one two three");
     string ltrim_response = g.command("ltrim l 1 -1");
     string ltrim_range = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("OK", ltrim_response);
     EXPECT_EQ(f.redis_list({"two", "three"}), ltrim_range);
 }
@@ -608,7 +648,7 @@ TEST(GraphyTests, ListTrim2)
     g.command("rpush l hello hello foo bar");
     string ltrim_response = g.command("ltrim l 1 -1");
     string ltrim_range = g.command("lrange l 0 -1");
-    Formatter f;
+    Utils f;
     EXPECT_EQ("OK", ltrim_response);
     EXPECT_EQ(f.redis_list({"hello", "foo", "bar"}), ltrim_range);
 }
@@ -625,4 +665,17 @@ TEST(GraphyTests, GetRange)
     EXPECT_EQ("ing", range2);
     EXPECT_EQ("This is a string", range3);
     EXPECT_EQ("string", range4);
+}
+
+TEST(GraphyTests, Keys)
+{
+    Graphy g;
+    g.command("mset firstname Jack lastname Stuntman age 35");
+    string keys1 = g.command("keys \"*name*\"");
+    string keys2 = g.command("keys \"a??\"");
+    string keys3 = g.command("keys \"*\"");
+    Utils u;
+    EXPECT_EQ(u.redis_list({"firstname", "lastname"}), keys1);
+    EXPECT_EQ(u.redis_list({"age"}), keys2);
+    EXPECT_EQ(u.redis_list({"firstname", "lastname", "age"}), keys3);
 }

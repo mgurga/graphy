@@ -5,7 +5,7 @@ string Graphy::sinter(string s, Database* db)
     Parser p;
     vector<string> args = p.parse(s);
     if (args.size() == 0) return "ERR incorrect number of arguments";
-    Formatter f;
+    Utils f;
     if (args.size() == 1) return f.redis_list(db->smembers(args.at(0)));
     vector<string> vals = db->smembers(args.at(0));
     vector<string> out;
@@ -30,7 +30,7 @@ string Graphy::sinterstore(string s, Database* db)
     Parser p;
     vector<string> args = p.parse(s);
     if (args.size() <= 1) return "ERR incorrect number of arguments";
-    Formatter f;
+    Utils f;
     if (args.size() == 2)
     {
         vector<string> out = db->smembers(args.at(0));

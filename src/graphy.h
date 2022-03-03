@@ -15,9 +15,9 @@
 #include "parser.cpp"
 #endif
 
-#ifndef FORMATTER_CPP
-#define FORMATTER_CPP
-#include "formatter.cpp"
+#ifndef Utils_H
+#define Utils_H
+#include "utils.h"
 #endif
 
 class Graphy
@@ -73,5 +73,6 @@ public:
     string lindex(string s, Database* db);
     string ltrim(string s, Database* db);
     string getrange(string s, Database* db);
+    string keys(string s, Database* db);
 };
 #endif // GRAPHY_H

@@ -19,7 +19,7 @@ string Graphy::spop(string s, Database* db)
 
         return "\"" + randval + "\"";
     } else {
-        Formatter f;
+        Utils f;
         vector<string> out;
 
         for (int i = 0; i < count; i++)

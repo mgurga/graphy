@@ -61,6 +61,7 @@ string Graphy::command(string c)
         if (c5 == "rpush") return rpush(c.substr(5), db);
         if (c5 == "ltrim") return ltrim(c.substr(5), db);
         if (c4 == "srem") return srem(c.substr(4), db);
+        if (c4 == "keys") return keys(c.substr(4), db);
         if (c4 == "llen") return llen(c.substr(4), db);
         if (c4 == "lrem") return lrem(c.substr(4), db);
         if (c4 == "lset") return lset(c.substr(4), db);

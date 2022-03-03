@@ -15,7 +15,7 @@ string Graphy::srandmember(string s, Database* db)
     if (count == 1)
         return "\"" + db->srandmember(args.at(0)) + "\"";
     else {
-        Formatter f;
+        Utils f;
         vector<string> out;
 
         for (int i = 0; i < count; i++)

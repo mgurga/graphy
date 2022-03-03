@@ -7,6 +7,9 @@ graphy command: build
 test: build-testing
     cd build/test/ && ./test_graphy
 
+testc command: build-testing
+    cd build/test/ && ./test_graphy {{command}}
+
 run command: build
     cd build && ./graphy r {{command}}
 
