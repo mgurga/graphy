@@ -306,7 +306,6 @@ void Database::add_dbentry(DBEntry dbe)
 bool Database::delete_dbentry(DBEntry dbe)
 {
     vector<DBEntry> keys = get_key_data(dbe.key);
-    int deletedbytes = 0;
     if (keys.empty())
         return false;
 
@@ -317,11 +316,10 @@ bool Database::delete_dbentry(DBEntry dbe)
             if (*debug)
             {
                 cout << "deleting key: " << e << endl;
-                cout << "starting at " << e.keystart - deletedbytes - 1 << endl;
+                cout << "starting at " << e.keystart - 1 << endl;
             }
-            data.erase(data.begin() + e.keystart - deletedbytes - 1,
-                       data.begin() + e.keystart + e.entry_size() - deletedbytes + 1);
-            deletedbytes += e.entry_size() + 2;
+            data.erase(data.begin() + e.keystart - 1,
+                       data.begin() + e.keystart + e.entry_size() + 1);
             return true;
         }
     }

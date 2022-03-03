@@ -41,7 +41,9 @@ string Graphy::command(string c)
         if (c9 == "sismember") return sismember(c.substr(9), db);
         if (c8 == "smembers") return smembers(c.substr(8), db);
         if (c8 == "renamenx") return renamenx(c.substr(8), db);
+        if (c8 == "getrange") return getrange(c.substr(8), db);
         if (c7 == "flushdb") return flushdb(db);
+        if (c6 == "substr") return getrange(c.substr(6), db);
         if (c6 == "getset") return getset(c.substr(6), db, &debug);
         if (c6 == "exists") return exists(c.substr(6), db);
         if (c6 == "dbsize") return dbsize(c.substr(6), db, &debug);

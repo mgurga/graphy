@@ -612,3 +612,17 @@ TEST(GraphyTests, ListTrim2)
     EXPECT_EQ("OK", ltrim_response);
     EXPECT_EQ(f.redis_list({"hello", "foo", "bar"}), ltrim_range);
 }
+
+TEST(GraphyTests, GetRange)
+{
+    Graphy g;
+    g.command("set mykey \"This is a string\"");
+    string range1 = g.command("getrange mykey 0 3");
+    string range2 = g.command("getrange mykey -3 -1");
+    string range3 = g.command("getrange mykey 0 -1");
+    string range4 = g.command("getrange mykey 10 100");
+    EXPECT_EQ("This", range1);
+    EXPECT_EQ("ing", range2);
+    EXPECT_EQ("This is a string", range3);
+    EXPECT_EQ("string", range4);
+}
