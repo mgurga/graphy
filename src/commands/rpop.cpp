@@ -4,7 +4,7 @@ string Graphy::rpop(string s, Database *db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 1) return "ERR incorrect number of arguments";
+    if (args.size() != 1) return ERR_NUM_OF_ARGS;
 
     vector<string> keys = db->rpop(args.at(0));
     if (keys.empty())

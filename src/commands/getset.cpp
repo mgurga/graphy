@@ -4,7 +4,7 @@ string Graphy::getset(string s, Database* db, bool* debug)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 2) return "ERR incorrect number of arguments";
+    if (args.size() != 2) return ERR_NUM_OF_ARGS;
     if (*debug)
         cout << "getset command: '" << s << "'" << endl;
     string key = args.at(0);

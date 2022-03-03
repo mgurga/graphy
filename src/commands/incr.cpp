@@ -4,7 +4,7 @@ string Graphy::incr(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 1) return "ERR incorrect number of arguments";
+    if (args.size() != 1) return ERR_NUM_OF_ARGS;
     string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))
@@ -18,7 +18,7 @@ string Graphy::incrby(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 2) return "ERR incorrect number of arguments";
+    if (args.size() != 2) return ERR_NUM_OF_ARGS;
     string key = args.at(0);
     string val = db->get(key);
     if (db->key_exists(key))

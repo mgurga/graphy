@@ -4,7 +4,7 @@ string Graphy::rpush(string s, Database *db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() < 2) return "ERR incorrect number of arguments";
+    if (args.size() < 2) return ERR_NUM_OF_ARGS;
     if (args.size() == 2)
         return "(integer) " + to_string(db->rpush(args.at(0), args.at(1)));
 

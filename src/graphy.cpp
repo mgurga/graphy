@@ -83,10 +83,10 @@ string Graphy::command(string c)
     }
     catch (const char* message)
     {
-        return "ERR string out of range with message: " + string(message);
+        return ERR_OUT_OF_RANGE + string(" with error: ") + string(message);
     }
 
-    return "ERR unknown command";
+    return ERR_UNKNOWN_COMMAND;
 }
 
 string Graphy::to_lower(string s)

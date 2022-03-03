@@ -4,7 +4,7 @@ string Graphy::spop(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 1 && args.size() != 2) return "ERR incorrect number of arguments";
+    if (args.size() != 1 && args.size() != 2) return ERR_NUM_OF_ARGS;
 
     int count;
     if (args.size() == 2)

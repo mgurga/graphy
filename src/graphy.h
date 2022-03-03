@@ -20,6 +20,11 @@
 #include "utils.h"
 #endif
 
+#define ERR_NUM_OF_ARGS "ERR incorrect number of arguments"
+#define ERR_UNKNOWN_COMMAND "ERR unknown command"
+#define ERR_OUT_OF_RANGE "ERR out of range"
+#define ERR_NO_SUCH_KEY "ERR no such key"
+
 class Graphy
 {
 public:

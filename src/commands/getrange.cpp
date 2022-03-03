@@ -4,7 +4,7 @@ string Graphy::getrange(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() != 3) return "ERR incorrect number of arguments";
+    if (args.size() != 3) return ERR_NUM_OF_ARGS;
     string keyval = db->get(args.at(0));
     if (keyval == "(nil)")
         return "";

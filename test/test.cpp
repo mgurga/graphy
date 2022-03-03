@@ -252,7 +252,7 @@ TEST(GraphyTests, EchoIncorrectArgs)
 {
     Graphy g;
     string res = g.command("echo hello world");
-    EXPECT_EQ("ERR incorrect number of arguments", res);
+    EXPECT_EQ(ERR_NUM_OF_ARGS, res);
 }
 
 TEST(GraphyTests, Incrby5)

@@ -4,7 +4,7 @@ string Graphy::sunion(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() == 0) return "ERR incorrect number of arguments";
+    if (args.size() == 0) return ERR_NUM_OF_ARGS;
     Utils f;
     if (args.size() == 1) return f.redis_list(db->smembers(args.at(0)));
 
@@ -25,7 +25,7 @@ string Graphy::sunionstore(string s, Database* db)
 {
     Parser p;
     vector<string> args = p.parse(s);
-    if (args.size() <= 1) return "ERR incorrect number of arguments";
+    if (args.size() <= 1) return ERR_NUM_OF_ARGS;
     Utils f;
     if (db->key_exists(args.at(0)))
         db->delete_key(args.at(0));
