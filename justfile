@@ -20,15 +20,15 @@ build:
     #!/usr/bin/env bash
     mkdir -p build
     cd build
-    cmake ..
-    make -j $(nproc)
+    cmake .. -G Ninja
+    ninja -j $(nproc)
 
 build-testing:
     #!/usr/bin/env bash
     mkdir -p build
     cd build
-    cmake .. -DBUILD_TESTING=true
-    make -j $(nproc)
+    cmake .. -DBUILD_TESTING=true -G Ninja
+    ninja -j $(nproc)
 
 clean:
     rm -rf build

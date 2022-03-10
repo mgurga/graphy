@@ -18,14 +18,14 @@ r:
 build:
 	mkdir -p build
 	cd build
-	cmake ..
-	make -j $(shell nproc)
+	cmake .. -G Ninja
+	ninja -j $(shell nproc)
 
 test-build:
 	mkdir -p build
 	cd build
-	cmake .. -DBUILD_TESTING=true
-	make -j $(shell nproc)
+	cmake .. -DBUILD_TESTING=true -G Ninja
+	ninja -j $(shell nproc)
 
 clean:
 	rm -rf build
